@@ -1,0 +1,329 @@
+/* --- 1. FUNDO PRINCIPAL E CABEÇALHO --- */
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #242424;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ff6600;
+    color: white;
+    padding: 20px 40px;
+    flex-shrink: 0;
+}
+
+/* Elevação sutil para o header (Figma-like) */
+.app-header {
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+}
+
+.header-left { 
+    display: flex; 
+    align-items: center; 
+    gap: 20px;
+}
+
+.logo-box { 
+    width: 254px; 
+    height: 243px; 
+    background-color: white; 
+    border-radius: 45px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    flex-shrink: 0;
+}
+
+.logo-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 45px;
+}
+
+/* Garantir que logo não quebre layout em telas menores */
+@media (max-width: 1100px) {
+    .logo-box { width: 180px; height: 170px; }
+    .pizzeria-name { font-size: 28px; }
+    .management-title { font-size: 20px; }
+}
+
+.title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pizzeria-name {
+    font-size: 40px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 2%;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.management-title { 
+    font-size: 32px; 
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 2%;
+    line-height: 100%;
+    margin: 0;
+}
+
+.header-right { 
+    text-align: right; 
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 200px;
+    align-items: flex-end;
+}
+
+.header-right .time {
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.header-right .date {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+/* --- 2. BARRA DE AÇÃO (Escura) --- */
+.action-bar {
+    display: flex;
+    background-color: #444444;
+    padding: 10px 30px;
+    align-items: center;
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+.search-input-group { 
+    flex-grow: 1; display: flex; align-items: center; background-color: #2e2e2e; 
+    border-radius: 6px; padding: 8px 12px; max-width: 520px; margin-right: 12px;
+}
+.search-icon { margin-right: 8px; opacity: 0.95; }
+.search-input { flex-grow: 1; background: none; border: none; color: white; outline: none; font-size: 16px; }
+.refresh-button { 
+    background-color: #ff6600; color: white; border: none; border-radius: 50%; 
+    width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+}
+.refresh-button svg { width: 18px; height: 18px; }
+
+/* Status badges com cores claras e sombra */
+.column-title.red-header .badge, .column-title.red-header .status-count { background-color: #FF6D6D; color: #fff; box-shadow: 0 6px 18px rgba(255,109,109,0.28); }
+.column-title.orange-header .badge, .column-title.orange-header .status-count { background-color: #FFC355; color: #222; box-shadow: 0 6px 18px rgba(255,195,85,0.28); }
+.column-title.green-header .badge, .column-title.green-header .status-count { background-color: #89FF89; color: #222; box-shadow: 0 6px 18px rgba(137,255,137,0.28); }
+.column-title.blue-header .badge, .column-title.blue-header .status-count { background-color: #BFE8FF; color: #222; box-shadow: 0 6px 18px rgba(30,144,255,0.18); }
+
+/* Alias .status-count para compatibilidade*/
+.status-count { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 40px; border-radius: 8px; font-weight: 700; font-size: 16px; color: #fff; box-shadow: 0 6px 18px rgba(0,0,0,0.16); }
+
+/* --- 3. KANBAN PRINCIPAL --- */
+.kanban-board {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #242424;
+    overflow: hidden;
+}
+
+.kanban-columns-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 20px 30px 30px 30px;
+    flex: 1;
+    width: 100%;
+    position: relative; /* necessário para cdkDragBoundary funcionar corretamente */
+    overflow-x: auto;
+    overflow-y: hidden;
+    min-height: 0;
+}
+
+.kanban-column {
+    display: flex;
+    flex-direction: column;
+    background-color: #333333;
+    border-radius: 8px;
+    padding: 15px;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.column-title {
+    font-size: 1.1em;
+    font-weight: 700;
+    margin-bottom: 15px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    flex-shrink: 0;
+}
+/* Elevação leve nos cabeçalhos das colunas para combinar com Figma */
+.column-title { box-shadow: 0 6px 12px rgba(0,0,0,0.12); }
+
+.red-header { background-color: #ff4d4f; } 
+.orange-header { background-color: #faad14; }
+.green-header { background-color: #52c41a; }
+.blue-header { background-color: #1890ff; }
+
+.badge {
+    padding: 6px 10px; border-radius: 8px; font-weight: 700; font-size: 14px;
+    background-color: rgba(255,255,255,0.12); color: #fff;
+}
+
+/* Badges por coluna com cores do Figma */
+.column-title.red-header .badge { background-color: #ff4d4f; color: #fff; }
+.column-title.orange-header .badge { background-color: #faad14; color: #fff; }
+.column-title.green-header .badge { background-color: #52c41a; color: #fff; }
+.column-title.blue-header .badge { background-color: #1890ff; color: #fff; }
+
+.task-list {
+    flex: 1;
+    min-height: 0;
+    padding: 5px 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* --- 4. CARDS DE PEDIDO --- */
+.order-card {
+    cursor: grab;
+    background-color: #f5f5f5;
+    margin-bottom: 15px;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    flex-shrink: 0;
+    transition: transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
+}
+
+.order-card.updated {
+    transform: scale(1.01);
+    /* default subtle fallback */
+    box-shadow: 0 8px 22px rgba(0,128,0,0.14);
+    background-color: #f6fff7;
+}
+
+/* Status-specific glow when updated (uses data-status attribute) */
+.order-card.updated[data-status="A PREPARAR"] {
+    box-shadow: 0 14px 34px rgba(255,109,109,0.34);
+    background-color: rgba(255,109,109,0.06);
+}
+.order-card.updated[data-status="EM PREPARO"] {
+    box-shadow: 0 14px 34px rgba(255,195,85,0.34);
+    background-color: rgba(255,195,85,0.06);
+}
+.order-card.updated[data-status="PRONTO"] {
+    box-shadow: 0 14px 34px rgba(137,255,137,0.34);
+    background-color: rgba(137,255,137,0.06);
+}
+.order-card.updated[data-status="ENTREGUE"] {
+    box-shadow: 0 14px 34px rgba(30,144,255,0.24);
+    background-color: rgba(30,144,255,0.04);
+}
+
+
+
+/* Glow effect on moved card (subtle) */
+.order-card.just-moved {
+    animation: glow-pop 600ms ease forwards;
+}
+@keyframes glow-pop {
+    0% { box-shadow: 0 6px 18px rgba(0,0,0,0.18); }
+    40% { transform: scale(1.02); box-shadow: 0 12px 28px rgba(0,128,0,0.18); }
+    100% { transform: scale(1); box-shadow: 0 6px 18px rgba(0,0,0,0.18); }
+}
+
+.card-header {
+    display: flex; 
+    justify-content: space-between; 
+    margin-bottom: 8px; 
+    padding-bottom: 8px; 
+    color: #333333; 
+    border-bottom: 1px dashed rgba(0,0,0,0.06);
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.order-id { 
+    font-weight: 700;
+    min-width: 60px;
+}
+
+.table-name {
+    font-size: 0.85em;
+    color: #666666;
+    font-weight: 500;
+}
+
+.time-elapsed { 
+    font-weight: 500; 
+    color: #666666; 
+    font-size: 0.85em;
+    margin-left: auto;
+}
+
+.order-items-list { 
+    list-style: none; 
+    padding: 0; 
+    margin: 0 0 15px 0; 
+    font-size: 0.95em; 
+}
+
+.item-qty { 
+    font-weight: 700; 
+    color: #ff6600; 
+    margin-right: 5px; 
+}
+
+.action-button {
+    width: 100%; 
+    padding: 10px; 
+    border: none; 
+    border-radius: 4px; 
+    color: white; 
+    font-weight: 600; 
+    cursor: pointer; 
+    background-color: #212121; 
+}
+
+.action-button:hover { 
+    background-color: #000000; 
+}
+
+.border-red-500 { border-left: 5px solid #ff4d4f; }
+.border-orange-500 { border-left: 5px solid #faad14; }
+.border-green-500 { border-left: 5px solid #52c41a; }
+.border-blue-500 { border-left: 5px solid #1890ff; }
+
+.empty-state {
+    text-align: center; 
+    padding: 30px 10px; 
+    color: #aaa; 
+    font-style: italic; 
+    border: 1px dashed #666; 
+    border-radius: 4px; 
+    background-color: #444;
+}
+
+
+
+

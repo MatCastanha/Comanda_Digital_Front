@@ -1,125 +1,78 @@
+<!-- ============================================== -->
+<!-- ESTRUTURA PRINCIPAL: TELA DE GESTÃO DO CARDÁPIO -->
+<!-- ============================================== -->
 <div class="tela-gerente-container">
-
- 
-
+  
+  <!-- CABEÇALHO: MÉTICAS E BOTÃO ADICIONAR ITEM -->
   <header class="top-header">
-
     <div class="header-content">
-
-     
-
+      <!-- Contagem de itens no cardápio -->
       <div class="overview-box">
-
         <h3 class="box-title">Items no cardápio</h3>
-
         <div class="box-count">{{ menuItems.length }} <span>📊</span></div>
-
       </div>
-
-     
-
+      <!-- Botão para abrir o modal de adição -->
       <button class="btn-add" (click)="openAddItemModal()">
-
         + Adicionar Item
-
       </button>
-
     </div>
-
   </header>
 
-
-
+  <!-- CORPO PRINCIPAL: FILTROS E TABELA -->
   <div class="content-body">
-
     <h2 class="section-title">Itens Adicionados</h2>
 
-
-
-   <div class="filter-bar">
-
-    <input
-
+    <!-- BARRA DE FILTROS E PESQUISA -->
+    <div class="filter-bar">
+      <!-- Campo de busca por nome -->
+      <input
         type="text"
-
         placeholder="🔍 Busque pelo Item"
-
         [(ngModel)]="searchTerm"
-
         (input)="applyCombinedFilter()"
-
         class="search-input">
-
-     
-
+      
+      <!-- Botões de filtro por categoria (Loop) -->
       <button
-
         *ngFor="let category of allCategories"
-
         class="filter-btn-categoria"
-
         (click)="applyCategoryFilter(category)"
-
         [class.active]="selectedCategory === category">
-
-       
-
         {{ category }}
-
       </button>
+    </div>
 
-          </div>
-
-
-
+    <!-- TABELA DE ITENS -->
     <table class="menu-table">
-
       <thead>
-
         <tr>
-
           <th>Foto</th>
-
           <th>Nome</th>
-
           <th>Preço</th>
-
           <th>Categoria</th>
-
           <th>Ações</th>
-
         </tr>
-
       </thead>
-
       <tbody>
-
+        <!-- Loop: Renderiza itens filtrados -->
         <tr *ngFor="let item of filteredItems">
-
+          <!-- Dados do item: Foto, Nome, Preço, Categoria -->
           <td><img [src]="item.foto || 'placeholder.jpg'" alt="{{ item.nome }}" class="item-foto"></td>
-
           <td>{{ item.nome }} <span class="item-tag">{{ item.tag }}</span></td>
-
           <td>{{ item.preco }}</td>
-
-         <td>
-
-              <span
-
-                class="category-pill"
-
-                [ngClass]="'category-' + item.categoria">
-
-                {{ item.categoria }}
-
-              </span>
-
-            </td>
-
+          <td>
+            <span
+              class="category-pill"
+              [ngClass]="'category-' + item.categoria">
+              {{ item.categoria }}
+            </span>
+          </td>
+          <!-- Ações: Ícones de Editar e Remover -->
           <td class="action-icons popup-parent">
             <span class="icon-edit" (click)="openEditItem(item)">✏️</span>
             <span class="icon-remove" (click)="openRemoveConfirm(item)">🗑️</span>
 
+            <!-- Popup de Confirmação de Remoção (aparece na linha do item selecionado) -->
             <app-remove-popup
               *ngIf="isRemovePopupOpen && selectedItem === item"
               [itemName]="selectedItem.nome"
@@ -127,80 +80,43 @@
               (confirmRemove)="onRemoveConfirmed()">
             </app-remove-popup>
           </td>
-
+        </tr>
       </tbody>
-
     </table>
-
-   
-
+    
+    <!-- Rodapé da tabela: Contagem de itens -->
     <div class="items-footer">
-
       Exibindo {{ filteredItems.length }} de {{ menuItems.length }} Itens
-
     </div>
-
   </div>
-
 </div>
 
+<!-- ============================================== -->
+<!-- MODAIS E OVERLAYS (FORA DA ESTRUTURA PRINCIPAL) -->
+<!-- O overlay captura o clique fora do modal para fechar -->
+<!-- ============================================== -->
 
-
-
+<!-- 1. Modal para Adicionar Item -->
 <div class="modal-overlay"
-
-    *ngIf="isAddItemModalOpen"
-
-    (click)="closeModal()">
-
+  *ngIf="isAddItemModalOpen"
+  (click)="closeModal()">
   <app-add-item-modal
-
     (close)="closeModal()"
-
     (itemAdded)="onItemAdded($event)"
-
     (click)="$event.stopPropagation()"
-
     [ngClass]="isAddItemModalOpen ? 'side-panel-enter' : 'side-panel-exit'">
-
   </app-add-item-modal>
-
 </div>
 
-
-
-<app-remove-popup
-
-  *ngIf="isRemovePopupOpen && selectedItem"
-
-  [itemName]="selectedItem.nome"
-
-  (close)="closeModal()"
-
-  (confirmRemove)="onRemoveConfirmed()">
-
-</app-remove-popup>
-
-
-
+<!-- 2. Modal para Editar Item -->
 <div class="modal-overlay"
-
-    *ngIf="isEditItemModalOpen && selectedItem"
-
-    (click)="closeModal()">
-
+  *ngIf="isEditItemModalOpen && selectedItem"
+  (click)="closeModal()">
   <app-edit-item-modal
-
     [item]="selectedItem"
-
     (close)="closeModal()"
-
     (itemUpdated)="onItemUpdated($event)"
-
     (click)="$event.stopPropagation()"
-
     [ngClass]="isEditItemModalOpen ? 'side-panel-enter' : 'side-panel-exit'">
-
   </app-edit-item-modal>
-
 </div>

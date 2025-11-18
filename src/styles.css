@@ -1,3 +1,7 @@
+
+/* Importar fonte Poppins para fidelidade ao Figma */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+
 /* 2. Estrutura Fundamental: Garante que a base da página ocupe 100% da tela */
 html, body {
   /* Margem e Padding zerados (já estava certo, mas reforçamos) */
@@ -8,7 +12,7 @@ html, body {
   height: 100%; 
   width: 100%;
   
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins', Arial, sans-serif;
   
   /* Nova Regra: Força o body a ser flexível (o que ajuda a ignorar margens estranhas) */
   display: flex; 
@@ -16,6 +20,7 @@ html, body {
 
   background-color: var(--light-gray-bg); 
 }
+
 
 /* 3. Variáveis Globais de CSS: Centraliza as cores e valores reutilizáveis */
 :root {
@@ -26,3 +31,33 @@ html, body {
   --border-color: #E0E0E0;
   --hover-orange: #ff9d2a;
 }
+
+/* === OVERRIDES para painel.component (correções rápidas solicitadas) === */
+/* Forçar números das badges em branco */
+.column-title.orange-header .status-count,
+.column-title.green-header .status-count,
+.column-title.blue-header .status-count,
+.column-title.red-header .status-count {
+  color: #ffffff !important;
+}
+
+/* Garantir tamanho e visibilidade do quadrado de contagem */
+.status-count {
+  width: 48px !important;
+  height: 40px !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+}
+
+/* Aumentar a data no header conforme solicitado */
+.header-right .date {
+  font-size: 18px !important;
+  color: rgba(255,255,255,0.95) !important;
+}
+
+/* Fim dos overrides rápidos */

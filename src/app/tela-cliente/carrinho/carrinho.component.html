@@ -57,33 +57,53 @@
       </div>
     </div>
   </main>
+  <!-- Mostrar resumo/checkout e footer apenas quando houver itens -->
+  <section *ngIf="itensCarrinho.length > 0" class="cart-checkout">
+    <div class="checkout-cards">
+      <button class="card">
+        <div class="card-left">
+          <div class="card-label">Destino da entrega</div>
+          <div class="card-value">{{ endereco }}</div>
+        </div>
+        <div class="card-right">›</div>
+      </button>
 
-  <!-- Mostrar resumo e footer apenas quando houver itens -->
-  <section *ngIf="itensCarrinho.length > 0" class="cart-summary">
+      <button class="card">
+        <div class="card-left">
+          <div class="card-label">Método de pagamento</div>
+          <div class="card-value">{{ pagamento }}</div>
+        </div>
+        <div class="card-right">›</div>
+      </button>
+    </div>
+
+    <section class="cart-summary">
     <div class="summary-line">
       <span>Subtotal</span>
       <span>R$ {{ valorTotal | number:'1.2-2' }}</span>
     </div>
     <div class="summary-line">
       <span>Taxa de entrega</span>
-      <span class="shipping-value">R$ 10,00</span>
+      <span class="shipping-value">R$ {{ shipping | number:'1.2-2' }}</span>
     </div>
     
     <div class="summary-line total">
       <span>Total</span>
       <span>R$ {{ (valorTotal + 10) | number:'1.2-2' }}</span>
     </div>
-  </section>
+    </section>
 
-  <!-- Footer fixo com preço grande e botão CTA à direita (aparece só com itens) -->
-  <div *ngIf="itensCarrinho.length > 0" class="cart-footer">
-    <div class="footer-left">
-      <div class="footer-total-label">R$ {{ (valorTotal + 10) | number:'1.2-2' }}</div>
+    <!-- Footer fixo com preço grande e botão CTA: Finalizar pedido -->
+    <div class="cart-footer">
+      <div class="footer-left">
+        <div class="footer-total-label">R$ {{ (valorTotal + shipping) | number:'1.2-2' }}</div>
+      </div>
+      <div class="footer-right">
+        <button class="continue-btn" (click)="finalizarPedido()">Finalizar pedido</button>
+      </div>
     </div>
-    <div class="footer-right">
-      <button class="continue-btn" (click)="irParaCheckout()">Continuar</button>
-    </div>
-  </div>
+
+  </section>
   
 </div>
 

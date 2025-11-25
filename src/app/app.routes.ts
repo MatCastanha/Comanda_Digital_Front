@@ -43,12 +43,7 @@ export const routes: Routes = [
 		title: 'Carrinho'
 	},
 
-	// Rota de checkout
-	{
-		path: 'cliente/checkout',
-		loadComponent: () => import('./tela-cliente/checkout/checkout.component').then(m => m.CheckoutComponent),
-		title: 'Checkout'
-	},
+
 
 	// Rota de busca (tela móvel)
 	{

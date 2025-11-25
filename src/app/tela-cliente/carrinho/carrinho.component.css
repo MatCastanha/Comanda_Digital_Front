@@ -27,6 +27,10 @@
 .cart-summary .summary-line span:last-child{font-weight:500;color:var(--dark-text)}
 .cart-summary .summary-line.total{font-size:1.1rem;font-weight:700;margin-top:15px;padding-top:10px;border-top:1px solid var(--light-grey)}
 .shipping-value{color:var(--primary-red)}
+.checkout-cards{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
+.card{display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:10px;background:#fbfbfb;border:1px solid #f0f0f0}
+.card-left .card-label{font-size:13px;color:#7f8c8d}
+.card-left .card-value{font-size:15px;font-weight:600;color:var(--dark-text);margin-top:4px}
 .cart-footer{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;gap:12px;background:transparent;z-index:60;width:calc(min(500px,100%) - 32px)}
 .footer-left{display:flex;align-items:center;flex:0 0 auto}
 .footer-total-label{font-weight:800;font-size:18px}

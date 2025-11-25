@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { CarrinhoService } from '../carrinho.service';
+import { OrderService } from '../../../services/order.service';
+import { OrderPayload } from '../../../interfaces/order.interface';
 
 // Estrutura simples do item do carrinho usada neste componente
 interface CarrinhoItem {
@@ -25,9 +27,14 @@ interface CarrinhoItem {
 export class CarrinhoComponent implements OnInit {
 
   itensCarrinho: CarrinhoItem[] = [];
+  // checkout fields moved into carrinho
+  endereco = 'Rua sei lá faltou ideia';
+  pagamento = 'Pagamento na entrega';
+  shipping = 10; // R$ 10
+  orderPlaced = false; // mostra feedback após finalizar
   valorTotal = 0;
 
-  constructor(private carrinhoService: CarrinhoService, private router: Router) {}
+  constructor(private carrinhoService: CarrinhoService, private router: Router, private orderService: OrderService) {}
 
   goBack() {
     // Volta para a tela do cliente. Usamos router.navigate para garantir comportamento consistente.
@@ -112,7 +119,39 @@ export class CarrinhoComponent implements OnInit {
 
   irParaCheckout(): void {
     // Navega para a tela de checkout
-    console.log('Navegando para checkout, valorTotal=', this.valorTotal, 'itens=', this.itensCarrinho.length);
-    this.router.navigate(['/cliente/checkout']).catch(err => console.error('Erro navegando para checkout', err));
+    // Antes o botão navegava para a tela de checkout.
+    // Agora integramos o checkout na própria tela do carrinho: rolar/abrir a seção de checkout.
+    // Como já mostramos os cards na página, apenas focamos o footer (UX leve).
+    console.log('Botão continuar/finalizar clicado. itens=', this.itensCarrinho.length, 'valor=', this.valorTotal);
+  }
+
+  finalizarPedido(): void {
+    if (this.itensCarrinho.length === 0) return;
+
+    const payload: OrderPayload = {
+      moment: new Date().toISOString(),
+      status: 'PENDING',
+      // client: { id: 1 }, // opcional: setar cliente quando tiver
+      items: this.itensCarrinho.map(i => ({
+        quantity: i.quantidade,
+        price: typeof i.preco === 'number' ? i.preco : Number(i.preco) || 0,
+        dish: { id: i.id ?? 0 }
+      }))
+    };
+
+    console.log('Enviando pedido ao backend', payload);
+    this.orderService.create(payload).subscribe({
+      next: (res) => {
+        console.log('Pedido criado com sucesso', res);
+        this.carrinhoService.clear();
+        this.syncFromService();
+        this.orderPlaced = true;
+      },
+      error: (err) => {
+        console.error('Erro criando pedido', err);
+        // manter carrinho para tentativa posterior; mostrar feedback de erro
+        alert('Erro ao criar pedido. Tente novamente.');
+      }
+    });
   }
 }

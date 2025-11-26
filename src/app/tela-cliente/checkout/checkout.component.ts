@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { CarrinhoService } from '../carrinho.service';
+import { ClientService } from '../../../services/client.service';
 
 @Component({
   selector: 'app-checkout',
@@ -16,13 +17,31 @@ export class CheckoutComponent implements OnInit {
   valorSubtotal = 0;
   shipping = 10; // R$ 10,00
 
-  constructor(private carrinho: CarrinhoService, private router: Router) {}
+  constructor(private carrinho: CarrinhoService, private router: Router, private clientService: ClientService) {}
 
   ngOnInit(): void {
     console.log('CheckoutComponent: ngOnInit');
     this.recalc();
     // opcional: ouvir mudanças no carrinho
     this.carrinho.itemsChanged$.subscribe(() => this.recalc());
+    // tenta preencher endereço com dados do cliente persistido
+    this.clientService.getClient().subscribe({
+      next: (c: any) => {
+        if (!c) return;
+        const addrObj = c.address || c.addressDTO || null;
+        if (addrObj) {
+          const parts: string[] = [];
+          if (addrObj.logradouro) parts.push(addrObj.logradouro);
+          if (addrObj.bairro) parts.push(addrObj.bairro);
+          if (addrObj.localidade) parts.push(addrObj.localidade);
+          if (addrObj.uf) parts.push(addrObj.uf);
+          this.endereco = parts.join(', ') + (c.addressNumber ? ' / ' + c.addressNumber : '');
+        } else if (c.endereco) {
+          this.endereco = c.endereco + (c.addressNumber ? ' / ' + c.addressNumber : '');
+        }
+      },
+      error: () => { /* sem cliente */ }
+    });
   }
 
   private recalc() {

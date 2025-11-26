@@ -70,6 +70,12 @@ html, body {
 .bottom-nav .nav-item.active svg{ transform: translateY(-6px) scale(1.18) rotate(-6deg); filter: drop-shadow(0 6px 12px rgba(255,140,0,0.15)); }
 .bottom-nav .nav-item svg path{ stroke: currentColor !important; fill: none !important }
 
+/* Make SVG circles (ex: carrinho 'feet') follow currentColor so they turn orange when active/hover */
+.bottom-nav .nav-item svg circle{ fill: currentColor !important; }
+
+/* Subtle hover transform + glow on the icon SVG itself for better feedback (home/heart/carrinho) */
+.bottom-nav .nav-item:hover svg{ transform: translateY(-3px) scale(1.06); filter: drop-shadow(0 6px 12px rgba(255,140,0,0.12)); }
+
 /* Badge do carrinho (bolinha laranja com número) */
 .bottom-nav .nav-item{ position:relative }
 .bottom-nav .cart-badge{

@@ -1,0 +1,61 @@
+<div class="perfil-wrapper">
+  <h2>Meu Perfil</h2>
+
+  <form #f="ngForm" (ngSubmit)="salvar()" class="perfil-form">
+    <div class="row">
+      <div class="col">
+        <label>Nome</label>
+        <input name="name" [(ngModel)]="model.name" required placeholder="Nome" />
+      </div>
+      <div class="col">
+        <label>Sobrenome</label>
+        <input name="midName" [(ngModel)]="model.midName" placeholder="Sobrenome" />
+      </div>
+    </div>
+
+    <!-- Telefone removido: não é usado no backend -->
+
+    <div class="row">
+      <div class="col-6">
+        <label>CPF *</label>
+        <div class="cpf-row">
+          <input name="cpf" type="text" [(ngModel)]="model.cpf" required
+            placeholder="000.000.000-00"
+            inputmode="numeric" maxlength="14"
+            [readonly]="cpfLocked" [title]="cpfLocked ? 'CPF bloqueado (clique no cadeado para desbloquear)' : ''"
+            (focus)="onCpfFocus($event)" (input)="onCpfInput($event)" (keydown)="onCpfKeyDown($event)" (blur)="onCpfBlur()" />
+          <button type="button" class="cpf-toggle" (click)="toggleCpfLock()" [attr.aria-pressed]="cpfLocked" title="Bloquear/Desbloquear CPF">{{ cpfLocked ? '🔒' : '🔓' }}</button>
+        </div>
+      </div>
+      <div class="col-6">
+        <label>CEP</label>
+        <input name="cep" type="text" [(ngModel)]="model.cep" (input)="onCepInput($event)" (keydown)="onCepKeyDown($event)" (change)="onCepChange()"
+               placeholder="00000-000" inputmode="numeric" maxlength="9" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <label>Endereço *</label>
+        <input name="endereco" [(ngModel)]="model.endereco" required placeholder="Rua, bairro, cidade - UF" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-4">
+        <label>Número</label>
+        <input name="numero" [(ngModel)]="model.numero" />
+      </div>
+      <div class="col-8">
+        <label>Salvar como (ex: Casa, Trabalho)</label>
+        <input name="salvarComo" [(ngModel)]="model.salvarComo" />
+      </div>
+    </div>
+
+    <div class="perfil-actions">
+      <button type="button" class="btn-cancel" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="btn-save" [disabled]="saving">Enviar</button>
+    </div>
+  </form>
+  <!-- debug block removed -->
+</div>

@@ -31,7 +31,8 @@ export class CarrinhoService {
     if (!item) return;
     const id = item.id !== undefined ? item.id : null;
     if (id !== null) {
-      this.items = this.items.filter(i => i.id !== id);
+      // compara ids como string para evitar mismatch number|string
+      this.items = this.items.filter(i => String(i.id) !== String(id));
     } else {
       // fallback por referência
       const idx = this.items.indexOf(item);
@@ -51,7 +52,8 @@ export class CarrinhoService {
     if (!item) return;
     const id = item.id !== undefined ? item.id : null;
     if (id !== null) {
-      const found = this.items.find(i => i.id === id);
+      // compara ids convertendo para string para evitar mismatch
+      const found = this.items.find(i => String(i.id) === String(id));
       if (found) found.quantidade = quantidade;
     } else {
       const idx = this.items.indexOf(item);

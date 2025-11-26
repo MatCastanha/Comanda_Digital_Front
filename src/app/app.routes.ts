@@ -59,6 +59,20 @@ export const routes: Routes = [
 		title: 'Histórico'
 	},
 
+	// Tela de confirmação / feedback do pedido
+	{
+		path: 'cliente/pedido/aprovado',
+		loadComponent: () => import('./tela-cliente/pedido-aprovado/pedido-aprovado.component').then(m => m.PedidoAprovadoComponent),
+		title: 'Pedido Aprovado'
+	},
+
+	// Perfil do cliente (formulário)
+	{
+		path: 'cliente/perfil',
+		loadComponent: () => import('./tela-cliente/cliente-perfil/cliente-perfil.component').then(m => m.ClientePerfilComponent),
+		title: 'Perfil'
+	},
+
 	// Rota Padrão: 
 	{
 		path: '',

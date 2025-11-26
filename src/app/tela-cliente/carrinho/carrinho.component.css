@@ -29,6 +29,28 @@
 .shipping-value{color:var(--primary-red)}
 .checkout-cards{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
 .card{display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:10px;background:#fbfbfb;border:1px solid #f0f0f0}
+.card-left{flex:1; display:flex; flex-direction:column; align-items:flex-start; text-align:left}
+.card{min-height:64px}
+.card:focus, .card:active { outline: none; border-color: rgba(255,140,0,0.28); box-shadow: 0 6px 18px rgba(255,140,0,0.08); }
+.card:focus-visible { box-shadow: 0 6px 22px rgba(255,140,0,0.12); }
+
+/* ensure arrow stays at far right */
+.card-right{ margin-left: auto; color:#aaa }
+
+/* Footer / CTA focus/active visual feedback */
+.cart-footer:focus-within, .continue-btn:focus, .continue-btn:active {
+	box-shadow: 0 8px 20px rgba(255,140,0,0.12);
+	border-radius:10px;
+}
+.continue-btn:active { transform: translateY(1px); }
+
+/* Bottom nav: destaque laranja quando ativo (especialmente o carrinho) */
+.bottom-nav .nav-item.active { color: #ff8c00 !important; }
+.bottom-nav .nav-item.active svg { transform: translateY(-6px) scale(1.18) rotate(-6deg); filter: drop-shadow(0 6px 12px rgba(255,140,0,0.15)); }
+.bottom-nav .nav-item .cart-badge { background: #ff6b00; color: #fff; border: 4px solid #fff; box-shadow: 0 6px 16px rgba(255,107,0,0.12); }
+
+/* Hover para mostrar que é clicável */
+.bottom-nav .nav-item:hover { color: #ff8c00; }
 .card-left .card-label{font-size:13px;color:#7f8c8d}
 .card-left .card-value{font-size:15px;font-weight:600;color:var(--dark-text);margin-top:4px}
 .cart-footer{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;gap:12px;background:transparent;z-index:60;width:calc(min(500px,100%) - 32px)}

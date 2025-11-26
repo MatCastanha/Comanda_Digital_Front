@@ -1,0 +1,16 @@
+<div class="pa-wrapper">
+  <button class="pa-close" (click)="fechar()">✕</button>
+  <div class="pa-icon">✔️</div>
+  <h1 class="pa-title">Eba!<br/>Seu pedido foi criado</h1>
+  <p class="pa-sub">Nossa equipe começou o preparo do seu pedido</p>
+
+  <ul class="pa-list">
+    <li><span class="muted">Tempo estimado</span><strong>60 min</strong></li>
+    <li><span class="muted">Endereço</span><strong>Casa</strong></li>
+    <li><span class="muted">Valor</span><strong>{{ order?.total || 'R$0,00' }}</strong></li>
+  </ul>
+
+  <div class="pa-footer">
+    <button class="pa-track" (click)="rastrear()">Rastrear entrega</button>
+  </div>
+</div>

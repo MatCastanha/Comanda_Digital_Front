@@ -1,11 +1,14 @@
 <!-- HomeComponent dynamic - lista de produtos vindo do DishService -->
 <div class="home-root">
   <header class="home-header">
-	<div class="greetings">
-	  <div class="hello">Olá X</div>
-	  <div class="address">Endereço: Rua sei lá / faltou ideia</div>
-	</div>
-	<div class="avatar">👤</div>
+    <div class="greetings">
+      <div class="hello">Olá {{ greetingName }}</div>
+      <div class="address" aria-live="polite">
+        <div class="addr-line1">{{ addressLine1 }}</div>
+        <div class="addr-line2">{{ addressLine2 }}</div>
+      </div>
+    </div>
+  <a class="avatar" routerLink="/cliente/perfil" title="Meu perfil">👤</a>
   </header>
 
   <div class="search-area">
@@ -68,7 +71,11 @@
 <style>
   .home-root { padding: 12px; max-width: 420px; margin: 0 auto; }
   .home-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px }
+  .greetings{ flex:1; min-width:0 }
   .greetings .hello { font-weight:600 }
+  .address{ color:#444; font-size:14px; margin-top:6px }
+  .addr-line1{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .addr-line2{ font-size:13px; color:#666; margin-top:2px }
   .search-area input { width:100%; padding:10px 12px; border-radius:999px; border:1px solid #e6e6e6 }
   .banner { margin:12px 0 }
   .banner-inner{ background:linear-gradient(90deg,#ff8c00,#ff5a3c); color:#fff; padding:18px; border-radius:18px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 8px 20px rgba(255,140,0,0.12) }

@@ -5,8 +5,8 @@ import { OrderPayload } from '../interfaces/order.interface';
 
 @Injectable({ providedIn: 'root' })
 export class OrderService {
-  // Ajuste a baseUrl se necessário
-  private baseUrl = '/orders';
+  // Ajuste a baseUrl se necessário (usar host do backend em dev)
+  private baseUrl = 'http://localhost:8080/orders';
 
   constructor(private http: HttpClient) {}
 

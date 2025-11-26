@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DishService } from '../../../services/dish.service';
+import { ClientService } from '../../../services/client.service';
 import { MenuItem } from '../../menu-gerente/overview/overview.component';
 import { CarrinhoService } from '../../tela-cliente/carrinho.service';
 import { Router } from '@angular/router';
@@ -21,7 +22,11 @@ export class HomeComponent implements OnInit {
   selectedCategory = 'Todas';
   search = '';
 
-  constructor(private dishService: DishService, private carrinho: CarrinhoService, private router: Router) {}
+  greetingName = 'X';
+  addressLine1 = '';
+  addressLine2 = '';
+
+  constructor(private dishService: DishService, private carrinho: CarrinhoService, private router: Router, private clientService: ClientService) {}
 
   get cartCount(): number {
     return this.carrinho.listar().length;
@@ -32,6 +37,50 @@ export class HomeComponent implements OnInit {
     const s = history.state && (history.state as any).search;
     if (s) this.search = s;
     this.load();
+    this.loadClientInfo();
+  }
+
+  private loadClientInfo() {
+    // Pergunta diretamente ao backend — backend é a fonte da verdade
+    this.clientService.getClient().subscribe({
+      next: (c) => this.applyClientToView(c),
+      error: (err) => { console.debug('Sem cliente no backend', err); }
+    });
+  }
+
+  private applyClientToView(c: any) {
+    if (!c) return;
+    // nome: prefira name, fullName ou primeiro nome do cpf
+    const name = c.name || c.firstName || c.nome || (c.cpf ? String(c.cpf) : null);
+    if (name) this.greetingName = name;
+    // endereço: forma de duas linhas: linha1 = logradouro + (bairro), linha2 = localidade, UF
+    this.addressLine1 = '';
+    this.addressLine2 = '';
+    const addrObj = c.address || c.addressDTO || null;
+    if (addrObj) {
+      const line1Parts: string[] = [];
+      if (addrObj.logradouro) line1Parts.push(addrObj.logradouro);
+      if (addrObj.bairro) line1Parts.push(addrObj.bairro);
+      this.addressLine1 = line1Parts.join(', ');
+      const line2Parts: string[] = [];
+      if (addrObj.localidade) line2Parts.push(addrObj.localidade);
+      if (addrObj.uf) line2Parts.push(addrObj.uf);
+      this.addressLine2 = line2Parts.join(', ');
+    }
+    if ((!this.addressLine1 || this.addressLine1.trim() === '') && c.endereco) {
+      // fallback quando backend retorna string única
+      const full = String(c.endereco || '');
+      // tenta quebrar por vírgula: logradouro/bairro | localidade, UF
+      const parts = full.split(',').map(p => p.trim());
+      if (parts.length <= 2) {
+        this.addressLine1 = full;
+        this.addressLine2 = c.addressNumber ? (c.addressNumber + '') : '';
+      } else {
+        this.addressLine1 = parts.slice(0, Math.max(1, parts.length - 2)).join(', ');
+        this.addressLine2 = parts.slice(-2).join(', ');
+      }
+    }
+    if (this.addressLine1 && c.addressNumber) this.addressLine1 += ' / ' + c.addressNumber;
   }
 
   openBusca() {

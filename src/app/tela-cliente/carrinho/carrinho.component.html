@@ -60,7 +60,7 @@
   <!-- Mostrar resumo/checkout e footer apenas quando houver itens -->
   <section *ngIf="itensCarrinho.length > 0" class="cart-checkout">
     <div class="checkout-cards">
-      <button class="card">
+      <button type="button" class="card" (click)="goToPerfil()" title="Editar destino da entrega">
         <div class="card-left">
           <div class="card-label">Destino da entrega</div>
           <div class="card-value">{{ endereco }}</div>
@@ -68,12 +68,12 @@
         <div class="card-right">›</div>
       </button>
 
-      <button class="card">
+      <button type="button" class="card">
         <div class="card-left">
           <div class="card-label">Método de pagamento</div>
           <div class="card-value">{{ pagamento }}</div>
         </div>
-        <div class="card-right">›</div>
+        <!-- seta removida: método de pagamento não é editável -->
       </button>
     </div>
 
@@ -99,7 +99,10 @@
         <div class="footer-total-label">R$ {{ (valorTotal + shipping) | number:'1.2-2' }}</div>
       </div>
       <div class="footer-right">
-        <button class="continue-btn" (click)="finalizarPedido()">Finalizar pedido</button>
+        <button class="continue-btn" (click)="finalizarPedido()" [disabled]="savingOrder">
+          <span *ngIf="!savingOrder">Finalizar pedido</span>
+          <span *ngIf="savingOrder">Enviando...</span>
+        </button>
       </div>
     </div>
 

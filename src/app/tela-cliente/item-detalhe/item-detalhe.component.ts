@@ -92,6 +92,8 @@ export class ItemDetalheComponent implements OnInit {
       return;
     }
     const raw = d.preco ?? d.price ?? d.precoStr ?? d.precoFormatado;
+    // Guarda o preço unitário numérico para cálculo de total ao alterar quantidade
+    this.unitPriceNumber = this.parsePriceToNumber(raw);
     if (typeof raw === 'string') {
       // Se já vier no formato "R$ 49,90" usa direto
       if (raw.trim().startsWith('R$')) {
@@ -107,6 +109,30 @@ export class ItemDetalheComponent implements OnInit {
     } else {
       this.displayPreco = 'R$ 0,00';
     }
+  }
+
+  // Preço unitário como número (em reais)
+  unitPriceNumber = 0;
+
+  private parsePriceToNumber(raw: any): number {
+    if (raw === undefined || raw === null) return 0;
+    if (typeof raw === 'number') return raw;
+    let s = String(raw);
+    // Remove currency symbol and whitespace
+    s = s.replace(/R\$|\s/g, '');
+    // Remove thousands separator and replace decimal comma
+    s = s.replace(/\./g, '').replace(/,/g, '.');
+    const n = parseFloat(s);
+    return isNaN(n) ? 0 : n;
+  }
+
+  formatCurrency(value: number): string {
+    return `R$ ${value.toFixed(2).replace('.', ',')}`;
+  }
+
+  getTotalDisplay(): string {
+    const total = (this.unitPriceNumber || 0) * (this.quantidade || 1);
+    return this.formatCurrency(total);
   }
 
   quantidade = 1;

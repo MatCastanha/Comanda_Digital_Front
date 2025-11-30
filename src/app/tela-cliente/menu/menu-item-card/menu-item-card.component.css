@@ -1,0 +1,19 @@
+:root{
+  --cor-principal-clara: #feeef1;
+  --cor-primaria-texto: #111827; /* preto suave */
+  --cor-secundaria-texto: #6b7280; /* cinza */
+}
+
+.menu-card{ display:flex; gap:12px; background:#fff; border-radius:10px; padding:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06); position:relative; }
+.menu-card-left img{ width:120px; height:90px; object-fit:cover; border-radius:8px; }
+.menu-card-body{ flex:1; display:flex; flex-direction:column; justify-content:space-between; }
+.menu-card-title{ margin:0; font-weight:700; color:var(--cor-primaria-texto); }
+.menu-card-desc{ margin:6px 0 0 0; color:var(--cor-secundaria-texto); font-size:13px; }
+.menu-card-row{ display:flex; align-items:center; justify-content:space-between; margin-top:8px; }
+.menu-card-price{ color:var(--cor-principal-clara); font-weight:700; }
+.btn-plus{ width:36px; height:36px; border-radius:50%; background:#ECF1E8; border:none; color:#FF6200; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;  font-weight:700; font-size:18px; line-height:1; padding:0; }
+.menu-card-left{ position:relative }
+.menu-card-left img{ border-radius:8px; display:block }
+.menu-card-fav{ position:absolute; left:8px; bottom:8px; background:#fff; border-radius:999px; border:1px solid #fff; width:44px; height:44px; cursor:pointer; box-shadow:0 8px 20px rgba(0,0,0,0.14); z-index:6; display:flex; align-items:center; justify-content:center; }
+.menu-card-fav span{ display:inline-block; width:100%; height:100%; line-height:40px; text-align:center; font-size:18px; color:#d1d1d1 }
+.menu-card-fav span.favorited{ color:#ff5a3c; }

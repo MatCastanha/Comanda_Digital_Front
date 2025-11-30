@@ -1,0 +1,19 @@
+<div class="busca-root">
+	<header class="busca-header">
+		<button class="back" (click)="goBack()">←</button>
+		<div class="search-wrap">
+			<input #searchInput type="search" placeholder="O que vai pedir hoje?" [(ngModel)]="searchTerm" (keydown.enter)="doSearch()" />
+		</div>
+	</header>
+
+	<section class="recent">
+		<h3>Pesquisas recentes</h3>
+		<ul>
+			<li *ngFor="let r of recent" (click)="selectRecent(r)">
+				<span class="dot">↗</span>
+				<span class="term">{{ r }}</span>
+			</li>
+			<li *ngIf="recent.length===0" class="empty">Nenhuma pesquisa recente</li>
+		</ul>
+	</section>
+</div>

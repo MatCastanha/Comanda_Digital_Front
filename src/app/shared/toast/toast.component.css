@@ -1,0 +1,5 @@
+:host { position: fixed; left: 0; right: 0; bottom: 80px; display:flex; justify-content:center; pointer-events:none; }
+.toast { pointer-events:auto; background: rgba(17,24,39,0.95); color: #fff; padding: 10px 14px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+.toast-inner{ display:flex; gap:10px; align-items:center }
+.toast svg{ flex:0 0 20px }
+.toast .msg{ font-weight:600 }

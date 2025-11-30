@@ -1,0 +1,11 @@
+/* Home component specific styles
+	Observação: a maior parte do estilo é feita com Tailwind no template.
+	Aqui deixamos utilitários pequenos que o Tailwind não cobre diretamente,
+	como esconder a scrollbar em áreas de rolagem horizontal. */
+
+/* Remove aparência da scrollbar para elementos com overflow-x */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Pequeno ajuste para o botão circular de adicionar (sombra) */
+.home-add-btn { box-shadow: 0 6px 12px rgba(0,0,0,0.08); }

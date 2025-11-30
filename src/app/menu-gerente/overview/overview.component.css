@@ -1,0 +1,370 @@
+/* ============================================================================
+   COMPONENTE OVERVIEW - Página de gestão do cardápio
+   ============================================================================ */
+
+/* ============================================================================
+   SEÇÃO 1: CONTAINER PRINCIPAL
+   ============================================================================ */
+
+/* Container raiz - organiza header e corpo verticalmente */
+.tela-gerente-container {
+  display: flex;                     /* Flex para alinhar verticalmente */
+  flex-direction: column;            /* Items um embaixo do outro */
+}
+
+/* ============================================================================
+   SEÇÃO 2: CABEÇALHO (HEADER)
+   ============================================================================ */
+
+/* Cabeçalho com gradiente laranja - área superior com título e botão */
+.top-header {
+  background: linear-gradient(135deg, #FF9422 0%, #FF6200 10%); /* Gradiente laranja */
+  color: white;                      /* Texto branco */
+  padding: 40px 50px;                /* Espaçamento interno */
+  border-radius: 12px;               /* Cantos arredondados */
+  margin-bottom: 25px;               /* Espaço até o próximo elemento */
+  box-shadow: 0 8px 15px rgba(255, 127, 80, 0.3); /* Sombra laranja suave */
+}
+
+/* Container interno do header - organiza título e botão lado a lado */
+.header-content {
+  display: flex;                     /* Flex horizontal */
+  justify-content: space-between;    /* Título esquerda, botão direita */
+  align-items: center;               /* Centraliza verticalmente */
+}
+
+/* Botão adicionar item */
+.btn-add {
+  background-color: black;           /* Fundo preto */
+  color: white;                      /* Texto branco */
+  border: none;                      /* Sem borda */
+  padding: 12px 25px;                /* Espaçamento interno */
+  border-radius: 8px;                /* Cantos arredondados */
+  font-weight: bold;                 /* Texto em negrito */
+  cursor: pointer;                   /* Muda cursor para mão */
+  font-size: 1rem;                   /* Tamanho da fonte */
+  transition: background-color 0.2s, transform 0.1s; /* Animação ao hover */
+}
+
+/* Botão adicionar ao passar mouse */
+.btn-add:hover {
+  background-color: #333333;         /* Fundo cinza mais claro */
+  transform: scale(1.02);            /* Aumenta 2% */
+}
+
+/* Caixa de contagem de itens (branca com sombra) */
+.overview-box {
+  background-color: white;           /* Fundo branco */
+  color: #333;                       /* Texto escuro */
+  padding: 10px 20px;                /* Espaçamento interno */
+  border-radius: 8px;                /* Cantos arredondados */
+  width: 200px;                      /* Largura fixa */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Sombra suave */
+}
+
+/* Título da caixa de contagem */
+.box-title {
+  font-size: 0.9rem;                 /* Texto pequeno */
+  margin: 0;                         /* Remove margem padrão */
+  opacity: 0.7;                      /* Texto com transparência */
+}
+
+/* Número de itens (grande e destaque) */
+.box-count {
+  font-size: 2rem;                   /* Texto muito grande */
+  font-weight: bold;                 /* Muito negrito */
+  display: flex;                     /* Flex horizontal */
+  align-items: center;               /* Centraliza verticalmente */
+  justify-content: space-between;    /* Espaço entre número e emoji */
+}
+
+/* Emoji da contagem */
+.box-count span {
+  font-size: 1.5rem;                 /* Emoji um pouco menor */
+  opacity: 0.8;                      /* Com transparência */
+}
+
+/* ============================================================================
+   SEÇÃO 3: CORPO PRINCIPAL (FILTROS E TABELA)
+   ============================================================================ */
+
+/* Container do corpo principal - fundo branco com sombra */
+.content-body {
+  padding: 30px 40px;                /* Espaçamento interno */
+  background-color: white;           /* Fundo branco */
+  margin-top: 25px;                  /* Espaço do header */
+  border-radius: 8px;                /* Cantos arredondados */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra suave */
+}
+
+/* Título da seção (Itens Adicionados) */
+.section-title {
+  font-size: 1.2rem;                 /* Texto grande */
+  font-weight: 600;                  /* Negrito médio */
+  margin-bottom: 20px;               /* Espaço embaixo */
+}
+
+/* ============================================================================
+   SEÇÃO 4: BARRA DE BUSCA E FILTROS
+   ============================================================================ */
+
+/* Container da busca - agrupa input de busca */
+.search-container {
+  position: relative;                /* Para posicionar ícones */
+  display: flex;                     /* Flex horizontal */
+  align-items: center;               /* Centraliza verticalmente */
+}
+
+/* Campo de input para buscar por nome */
+.search-input {
+  padding: 10px 1px 10px 20px;       /* Espaçamento interno */
+  border: 1px solid #ddd;            /* Borda cinza clara */
+  border-radius: 8px;                /* Cantos arredondados */
+  width: 250px;                      /* Largura fixa */
+  transition: border-color 0.2s;     /* Animação suave na borda */
+  font-size: 0.9rem;                 /* Texto pequeno */
+}
+
+/* Input ao focar (quando usuário clica) */
+.search-input:focus {
+  border-color: #FF9422;             /* Borda fica laranja */
+  outline: none;                     /* Remove contorno padrão */
+}
+
+/* Barra que agrupa todos os filtros (busca + botões de categoria) */
+.filter-bar {
+  display: flex;                     /* Flex horizontal */
+  gap: 15px;                         /* Espaço entre elementos */
+  margin-bottom: 25px;               /* Espaço embaixo */
+  align-items: center;               /* Centraliza verticalmente */
+}
+
+/* Botão de filtro por categoria */
+.filter-btn-categoria {
+  background-color: #f0f0f0;         /* Fundo cinza claro */
+  color: #333;                       /* Texto escuro */
+  border: none;                      /* Sem borda */
+  padding: 8px 15px;                 /* Espaçamento interno */
+  border-radius: 20px;               /* Muito arredondado (formato pílula) */
+  cursor: pointer;                   /* Muda cursor para mão */
+  font-weight: 500;                  /* Negrito médio */
+  transition: background-color 0.2s, color 0.2s; /* Animação suave */
+}
+
+/* Botão de filtro quando está selecionado (active) */
+.filter-btn-categoria.active {
+  background-color: #FF9422;         /* Fundo fica laranja */
+  color: white;                      /* Texto fica branco */
+}
+
+/* Botão de filtro ao passar mouse (se não está ativo) */
+.filter-btn-categoria:hover:not(.active) {
+  background-color: #e0e0e0;         /* Fundo fica mais escuro */
+}
+
+/* ============================================================================
+   SEÇÃO 5: TABELA DE ITENS
+   ============================================================================ */
+
+/* Tabela principal que exibe os itens */
+.menu-table {
+  width: 100%;                       /* Ocupa 100% da largura */
+  border-collapse: collapse;         /* Remove espaço entre células */
+}
+
+/* Células da tabela (tanto header quanto dados) */
+.menu-table th, .menu-table td {
+  padding: 12px 15px;                /* Espaçamento interno */
+  text-align: left;                  /* Texto alinhado à esquerda */
+  vertical-align: middle;            /* Centraliza conteúdo verticalmente */
+}
+
+/* Desenha a linha de separação como borda do tr para evitar que células
+   com conteúdo posicionado (popups, ícones) interrompam a linha. */
+.menu-table tbody tr {
+  border-bottom: 1px solid #ddd;
+}
+
+/* Cabeçalho da tabela (Foto, Nome, Preço, etc) */
+.menu-table th {
+  background-color: #FFE0C9;         /* Fundo laranja claro */
+  font-weight: 600;                  /* Negrito */
+  font-size: 0.9rem;                 /* Texto pequeno */
+  color: #5E251A;                    /* Texto marrom escuro */
+}
+
+/* Imagem do item na tabela */
+.item-foto {
+  width: 40px;                       /* Largura */
+  height: 40px;                      /* Altura (quadrado) */
+  border-radius: 4px;                /* Cantos um pouco arredondados */
+  object-fit: cover;                 /* Preenche o espaço mantendo proporção */
+}
+
+/* Tag adicional do item (ex: "Mussarela") */
+.item-tag {
+  font-size: 0.75rem;                /* Texto muito pequeno */
+  color: #888;                       /* Texto cinza */
+  margin-left: 5px;                  /* Espaço à esquerda */
+}
+
+/* Badge colorida da categoria (Pizza, Bebida, Doce) */
+.category-pill {
+  padding: 4px 10px;                 /* Espaçamento interno */
+  border-radius: 12px;               /* Cantos bem arredondados */
+  font-size: 0.8rem;                 /* Texto pequeno */
+  font-weight: 600;                  /* Negrito */
+  display: inline-flex;              /* Flex para alinhar com círculo */
+  align-items: center;               /* Centraliza verticalmente */
+  gap: 5px;                          /* Espaço entre texto e círculo */
+}
+
+/* Círculo colorido antes do texto da categoria */
+.category-pill::before {
+  content: '';                       /* Pseudo-elemento vazio */
+  display: block;                    /* Para aparecer */
+  width: 8px;                        /* Largura do círculo */
+  height: 8px;                       /* Altura do círculo */
+  border-radius: 50%;                /* Transforma em círculo */
+}
+
+/* Badge categoria PIZZA */
+.category-Pizza {
+  background-color: #FFF2E6;         /* Fundo laranja muito claro */
+  color: #FF7F50;                    /* Texto laranja */
+}
+.category-Pizza::before {
+  background-color: #FF7F50;         /* Círculo laranja */
+}
+
+/* Badge categoria BEBIDA */
+.category-Bebida {
+  background-color: #E8F8FF;         /* Fundo azul muito claro */
+  color: #4299E1;                    /* Texto azul */
+}
+.category-Bebida::before {
+  background-color: #4299E1;         /* Círculo azul */
+}
+
+/* Badge categoria DOCE */
+.category-Doce {
+  background-color: #FFF0F6;         /* Fundo rosa muito claro */
+  color: #FF6F9C;                    /* Texto rosa */
+}
+.category-Doce::before {
+  background-color: #FF6F9C;         /* Círculo rosa */
+}
+
+/* ============================================================================
+   SEÇÃO 6: AÇÕES (EDITAR E REMOVER)
+   ============================================================================ */
+
+/* Container dos ícones de ação (editar e remover) */
+.action-icons {
+  display: flex;                     /* Flex horizontal */
+  gap: 12px;                         /* Espaço entre ícones */
+  align-items: center;               /* Centraliza verticalmente */
+  position: relative;                /* Para posicionar popup em relação a isso */
+  height: 40px;                      /* Altura para o popup (restaurada) */
+  cursor: pointer;                   /* Muda cursor para mão */
+  user-select: none;                 /* Texto não é selecionável */
+  margin-top: 0;                      /* garante alinhamento vertical correto */
+}
+
+/* Wrapper interno para centralizar ícones dentro da célula */
+.action-icons-inner {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  height: 100%;
+}
+
+/* Ícone de editar (lápis) ao passar mouse */
+.action-icons .icon-edit:hover {
+  color: #FF9422;                    /* Ícone fica laranja */
+}
+
+/* Forçar alinhamento preciso dos ícones dentro do container da célula */
+.action-icons span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  line-height: 1;
+  font-size: 1rem; /* garante tamanho consistente */
+  padding: 0; /* remove possíveis offsets por padding */
+}
+
+/* Ícone de remover (lixo) - cor padrão vermelha */
+.action-icons .icon-remove {
+  color: #ff4d4f;                    /* Vermelho claro */
+}
+
+/* Ícone de remover ao passar mouse */
+.action-icons .icon-remove:hover {
+  color: #cc0000;                    /* Vermelho mais escuro */
+}
+
+/* ============================================================================
+   SEÇÃO 7: RODAPÉ DA TABELA
+   ============================================================================ */
+
+/* Texto que mostra quantos itens estão sendo exibidos */
+.items-footer {
+  text-align: right;                 /* Alinhado à direita */
+  padding-top: 15px;                 /* Espaço acima */
+  font-size: 0.9rem;                 /* Texto pequeno */
+  color: #666;                       /* Texto cinza médio */
+}
+
+/* ============================================================================
+   SEÇÃO 8: MODAIS E OVERLAYS
+   ============================================================================ */
+
+/* Fundo escuro atrás do modal (quando modal está aberto) */
+.modal-overlay {
+  position: fixed;                   /* Fica fixo na tela */
+  top: 0;                            /* No topo */
+  left: 0;                           /* Na esquerda */
+  width: 100%;                       /* Ocupa toda a largura */
+  height: 100%;                      /* Ocupa toda a altura */
+  background: rgba(0, 0, 0, 0.4);    /* Fundo escuro semi-transparente */
+  z-index: 1000;                     /* Fica sobre outros elementos */
+  display: flex;                     /* Flex para posicionar modal */
+  justify-content: flex-end;         /* Modal aparece à direita */
+  align-items: flex-start;           /* Começa no topo */
+  /* Animação suave ao abrir/fechar */
+  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Overlay quando modal está fechado */
+.modal-overlay-closed {
+  visibility: hidden;                /* Fica invisível */
+  opacity: 0;                        /* Completamente transparente */
+}
+
+/* Overlay quando modal está aberto */
+.modal-overlay-open {
+  visibility: visible;               /* Fica visível */
+  opacity: 1;                        /* Totalmente opaco */
+}
+
+/* Painel lateral - modal que aparece da direita */
+.side-panel-enter, .side-panel-exit {
+  width: 400px;                      /* Largura fixa do modal */
+  height: 100%;                      /* Altura total */
+  background: white;                 /* Fundo branco */
+  box-shadow: -8px 0 15px rgba(0, 0, 0, 0.2); /* Sombra à esquerda */
+  /* Animação suave ao aparecer/desaparecer */
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Painel ao entrar (aparecer) - posição normal */
+.side-panel-enter {
+  transform: translateX(0%);         /* Sem movimento */
+}
+
+/* Painel ao sair (desaparecer) - sai para a direita */
+.side-panel-exit {
+  transform: translateX(100%);       /* Sai 100% para a direita */
+}

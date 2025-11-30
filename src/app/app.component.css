@@ -1,0 +1,11 @@
+/* src/app/app.component.css (Limpeza do Componente Raiz) */
+
+/* :host referencia o próprio componente <app-root> */
+:host {
+    display: block; /* Garante que ele se comporta como um bloco de largura total */
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    /* Garante que o container ocupa toda a altura da tela */
+    min-height: 100vh; 
+}

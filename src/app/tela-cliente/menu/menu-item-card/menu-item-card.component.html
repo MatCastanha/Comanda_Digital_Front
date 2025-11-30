@@ -1,0 +1,21 @@
+<article class="menu-card" role="article">
+  <div class="menu-card-left" (click)="onOpen()">
+    <img [src]="item.img" [alt]="item.nome" />
+    <button class="menu-card-fav" title="Favoritar" (click)="onToggleFav($event)">
+      <span [class.favorited]="isFav">{{ isFav ? '♥' : '♡' }}</span>
+    </button>
+  </div>
+  <div class="menu-card-body">
+    <h4 class="menu-card-title">{{ item.nome }}</h4>
+    <p class="menu-card-desc">{{ item.descricao }}</p>
+      <div class="menu-card-row">
+        <div class="menu-card-price">R$ {{ item.preco | number:'1.2-2' }}</div>
+        <div class="menu-card-actions">
+          <button class="btn-plus" (click)="onAdd()">+</button>
+        </div>
+      </div>
+  </div>
+    <button class="menu-card-fav" title="Favoritar" (click)="onToggleFav($event)">
+      <span [class.favorited]="isFav">{{ isFav ? '♥' : '♡' }}</span>
+    </button>
+</article>

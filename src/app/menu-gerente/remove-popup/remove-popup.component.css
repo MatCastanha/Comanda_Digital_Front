@@ -1,0 +1,56 @@
+/* Remove popup: pequeno card de confirmação usado no menu-gerente */
+@keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.remove-popup-content {
+  position: absolute; /* posiciona perto do botão de acionar */
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); 
+  width: 260px;
+  right: 15px; 
+  top: 30px; 
+  text-align: left;
+  z-index: 10;
+  border: 1px solid #ddd;
+  animation: fadeInSlide 0.2s ease-out forwards;
+}
+
+.remove-popup-content p {
+  color: #333; 
+  margin: 0 0 15px 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* Destaque do nome do item (para chamar atenção do usuário) */
+.remove-popup-content p strong {
+    font-style: italic;
+    font-weight: 700;
+    color: #FF8C00;
+}
+
+.popup-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-no, .btn-yes {
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.btn-no { background: #eee; color: #333; }
+.btn-no:hover { background-color: #ddd; }
+
+.btn-yes { background-color: #FF8C00; color: white; }
+.btn-yes:hover { background-color: #cc7000; }

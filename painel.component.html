@@ -1,0 +1,134 @@
+<div class="kanban-board">
+    
+        <header class="app-header">
+      <div class="header-left">
+        <div class="logo-box">
+                    <div class="logo-placeholder">PRATO FEITO</div>
+        </div>
+        <div class="title-group">
+          <span class="pizzeria-name">Pizzaria Prato Feito</span>
+          <h1 class="management-title">Gestão de Pedidos da Cozinha</h1>
+        </div>
+      </div>
+      <div class="header-right">
+                <span class="time">{{ currentDateTime() | date:'HH:mm:ss' }}</span>
+        <span class="date">{{ currentDateTime() | date:'dd/MM/yyyy' }}</span>
+      </div>
+    </header>
+    
+        <div class="action-bar">
+      <div class="search-input-group">
+        <i class="search-icon">🔍</i> 
+        <input type="text" placeholder="Pesquisar..." class="search-input">
+      </div>
+      <button class="refresh-button" (click)="listenForOrders()">↻</button>
+    </div>
+    
+        <div cdkDropListGroup class="kanban-columns-grid">
+
+                <div class="kanban-column">
+          <h2 class="column-title red-header">A PREPARAR <span class="badge">{{ toPrepare().length }}</span></h2>
+          <div 
+            id="toPrepareList" 
+            [cdkDropListData]="toPrepare()" 
+            cdkDropList 
+            (cdkDropListDropped)="drop($event)" 
+            [cdkDropListConnectedTo]="['inProgressList']"
+            class="task-list">
+
+            <div *ngIf="toPrepare().length === 0" class="empty-state">Sem novos pedidos.</div>
+
+                        <div *ngFor="let order of toPrepare()" cdkDrag class="order-card" [ngClass]="getStatusColor(order.status)">
+              <div class="card-header">
+                <span class="order-id">#{{ order.orderId }}</span>
+                <span class="time-elapsed">{{ getTimeElapsed(order.timestamp) }}</span>
+              </div>
+              <ul class="order-items-list">
+                <li *ngFor="let item of order.items">
+                  <span class="item-qty">{{ item.qty }}x</span> {{ item.name }}
+                </li>
+              </ul>
+              <button class="action-button red-bg" (click)="moveOrderToNextStatus(order.orderId)">Iniciar Preparo</button>
+            </div>
+          </div>
+        </div>
+
+                <div class="kanban-column">
+          <h2 class="column-title orange-header">EM PREPARO <span class="badge">{{ inProgress().length }}</span></h2>
+          <div 
+            id="inProgressList" 
+            [cdkDropListData]="inProgress()" 
+            cdkDropList 
+            (cdkDropListDropped)="drop($event)" 
+            [cdkDropListConnectedTo]="['toPrepareList', 'readyList']"
+            class="task-list">
+            
+            <div *ngIf="inProgress().length === 0" class="empty-state">Inicie um pedido.</div>
+            
+                        <div *ngFor="let order of inProgress()" cdkDrag class="order-card" [ngClass]="getStatusColor(order.status)">
+              <div class="card-header">
+                <span class="order-id">#{{ order.orderId }}</span>
+                <span class="time-elapsed">{{ getTimeElapsed(order.timestamp) }}</span>
+              </div>
+              <ul class="order-items-list">
+                <li *ngFor="let item of order.items">
+                  <span class="item-qty">{{ item.qty }}x</span> {{ item.name }}
+                </li>
+              </ul>
+              <button class="action-button black-bg" (click)="moveOrderToNextStatus(order.orderId)">Finalizar Pedido</button>
+            </div>
+          </div>
+        </div>
+
+                <div class="kanban-column">
+          <h2 class="column-title green-header">PRONTO <span class="badge">{{ ready().length }}</span></h2>
+          <div 
+            id="readyList" 
+            [cdkDropListData]="ready()" 
+            cdkDropList 
+            (cdkDropListDropped)="drop($event)" 
+            [cdkDropListConnectedTo]="['inProgressList', 'deliveredList']"
+            class="task-list">
+            
+            <div *ngIf="ready().length === 0" class="empty-state">Ótimo trabalho!</div>
+            
+                        <div *ngFor="let order of ready()" cdkDrag class="order-card" [ngClass]="getStatusColor(order.status)">
+              <div class="card-header">
+                <span class="order-id">#{{ order.orderId }}</span>
+                <span class="time-elapsed">{{ getTimeElapsed(order.timestamp) }}</span>
+              </div>
+              <ul class="order-items-list">
+                <li *ngFor="let item of order.items">
+                  <span class="item-qty">{{ item.qty }}x</span> {{ item.name }}
+                </li>
+              </ul>
+              <button class="action-button black-bg" (click)="moveOrderToNextStatus(order.orderId)">Entregar Pedido</button>
+            </div>
+          </div>
+        </div>
+
+                <div class="kanban-column delivered-column">
+          <h2 class="column-title blue-header">ENTREGUE <span class="badge">{{ delivered().length }}</span></h2>
+          <div 
+            id="deliveredList" 
+            [cdkDropListData]="delivered()" 
+            cdkDropList 
+            (cdkDropListDropped)="drop($event)" 
+            [cdkDropListConnectedTo]="['readyList']"
+            class="task-list">
+            
+            <div *ngIf="delivered().length === 0" class="empty-state">Sem pedidos entregues.</div>
+            
+                        <div *ngFor="let order of delivered()" cdkDrag class="order-card delivered-card" [ngClass]="getStatusColor(order.status)">
+              <div class="card-header">
+                <span class="order-id">#{{ order.orderId }}</span>
+                <span class="time-elapsed">{{ getTimeElapsed(order.timestamp) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,52 @@
+<div class="historico-root">
+	<div class="tabs">
+		<button [class.active]="tab==='favoritos'" (click)="tab='favoritos'">Favoritos</button>
+		<button [class.active]="tab==='historico'" (click)="tab='historico'">Histórico</button>
+	</div>
+
+	<div *ngIf="tab==='favoritos'">
+		<div *ngIf="favoritos.length === 0">Nenhum favorito ainda.</div>
+		<div class="fav-list">
+			<div *ngFor="let f of favoritos" class="fav-row" (click)="abrirDetalhe(f)">
+				<img [src]="f.img || f.UrlImage || f.url || f.image || 'https://placehold.co/80x60'" alt="{{f.nome}}" />
+				<div class="meta">
+					<div class="title">{{ f.nome }}</div>
+					<div class="price">{{ displayPrice(f) }}</div>
+				</div>
+				<button class="fav-toggle" title="Favorito" (click)="toggleFav(f); $event.stopPropagation()">
+					<span class="heart">♥</span>
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="tab==='historico'">
+		<div>Sem pedidos no Histórico</div>
+	</div>
+
+	<!-- bottom nav -->
+	<nav class="bottom-nav">
+		<a routerLink="/cliente" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-item" title="Home">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+				<path d="M3 11.5L12 4l9 7.5" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+				<path d="M5 12v7a1 1 0 001 1h3v-5h6v5h3a1 1 0 001-1v-7" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</a>
+
+		<a routerLink="/cliente/carrinho" routerLinkActive="active" class="nav-item" title="Carrinho">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+				<path d="M6 6h15l-1.5 9h-11L6 6z" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+				<path d="M6 6L4 2H2" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+				<circle cx="10" cy="20" r="1" fill="#111" />
+				<circle cx="18" cy="20" r="1" fill="#111" />
+			</svg>
+			<span class="cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+		</a>
+
+		<a routerLink="/cliente/historico" routerLinkActive="active" class="nav-item" title="Favoritos">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+				<path d="M20.8 7.2a4.6 4.6 0 00-6.5 0L12 9.5l-2.3-2.3a4.6 4.6 0 00-6.5 6.5L12 21l8.8-7.3a4.6 4.6 0 000-6.5z" stroke="#111" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+		</a>
+	</nav>
+</div>

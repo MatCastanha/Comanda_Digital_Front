@@ -1,0 +1,166 @@
+/* ========================= */
+/* Estilos do modal "Adicionar Item" */
+/* Comentários: explico as partes principais para facilitar quem for editar depois */
+/* ========================= */
+
+/* O host define o comportamento de rolagem/padding do painel lateral */
+:host {
+    display: block; 
+    height: 100%;
+    padding: 30px;
+    overflow-y: auto; 
+}
+
+/* Título do modal */
+.modal-header {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 30px; 
+}
+
+/* Form groups: espaçamento entre campos */
+.form-group { 
+    margin-bottom: 20px; 
+}
+
+/* Labels: consistência visual */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #555;
+}
+
+/* Inputs/textarea/select: padding, borda e arredondamento */
+input[type="text"], 
+input[type="number"], 
+textarea, 
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd; 
+    border-radius: 8px; /* Arredondamento suave */
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+/* Foco laranja: ajuda a ver o campo ativo */
+input:focus, 
+textarea:focus, 
+select:focus {
+    border-color: #FF7F50; /* Borda Laranja Suave */
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 127, 80, 0.4);
+}
+
+/* Ação inferior (botões): centralizo e separo */
+.modal-actions {
+  display: flex !important; 
+  justify-content: center !important; 
+  gap: 20px; /* Espaçamento entre botões */
+  margin-top: 35px; 
+  padding-top: 20px;
+  border-top: 1px solid #eee; 
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* Botões: estilos principais */
+.btn-cancel {
+    background: white; 
+    color: #000000;
+    border: 1px solid #ccc;
+    padding: 15px 45px !important; 
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+.btn-cancel:hover {
+    background-color: #f0f0f0;
+}
+
+.btn-primary {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 15px 45px !important; 
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+.btn-primary:hover {
+    background-color: #333;
+}
+
+/* Container que agrupa o input de texto e o ícone de upload */
+.image-input-container { 
+    display: flex; 
+    align-items: center; 
+}
+
+.image-input-container input { 
+    flex-grow: 1; 
+    border-right: none; 
+    border-radius: 8px 0 0 8px; 
+    height: 42px; 
+    box-sizing: border-box; 
+    border: 1px solid #ddd;
+}
+
+.upload-icon {
+    padding: 10px; 
+    background-color: #F0F0F0; 
+    border: 1px solid #ddd; 
+    border-left: none; 
+    border-radius: 0 8px 8px 0; 
+    cursor: pointer;
+    font-size: 1rem; 
+    height: 20px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+.upload-icon:hover {
+    background-color: #e5e5e5;
+}
+
+/* Preview de imagem (mesma aparência do edit modal) */
+.image-preview-container {
+    text-align: center;
+    margin-bottom: 15px;
+}
+.item-image-preview {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin: 0 auto;
+    display: block;
+}
+
+/* Remover setinhas do input number (Chrome/Edge/Firefox) */
+input[type="number"].no-spin::-webkit-outer-spin-button,
+input[type="number"].no-spin::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"].no-spin {
+    -moz-appearance: textfield;
+}
+
+/* Estilos para o input de preço (formatação via JS) */
+.price-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}

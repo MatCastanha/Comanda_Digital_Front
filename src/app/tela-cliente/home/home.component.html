@@ -1,0 +1,122 @@
+<!-- HomeComponent dynamic - lista de produtos vindo do DishService -->
+<div class="home-root">
+  <header class="home-header">
+    <div class="greetings">
+      <div class="hello">Olá {{ greetingName }}</div>
+      <div class="address" aria-live="polite">
+        <div class="addr-line1">{{ addressLine1 }}</div>
+        <div class="addr-line2">{{ addressLine2 }}</div>
+      </div>
+    </div>
+  <a class="avatar" routerLink="/cliente/perfil" title="Meu perfil">👤</a>
+  </header>
+
+  <div class="search-area">
+    <input type="text" placeholder="O que vai pedir hoje?" [(ngModel)]="search" (focus)="openBusca()" (click)="openBusca()" />
+  </div>
+
+  <div class="banner">
+  <div class="banner-inner banner-hero" role="region" aria-label="Promoção">
+    <div class="banner-text">
+    <div class="banner-title">Leve 2</div>
+    <div class="banner-sub">Ganhe 1</div>
+    </div>
+    <!-- decoração gráfica sutil à direita (sem imagem funcional) -->
+    <div class="banner-deco" aria-hidden></div>
+  </div>
+  </div>
+
+  <div class="categories">
+	<button *ngFor="let c of categories" (click)="onCategory(c)" [class.active]="c===selectedCategory">{{c}}</button>
+  </div>
+
+  <section class="products-grid">
+    <div *ngFor="let p of filtered" class="card">
+      <div class="card-image">
+        <a [routerLink]="['/item-detalhe', p.id]">
+          <img [src]="p.UrlImage || 'https://placehold.co/300x200'" alt="{{p.nome}}" />
+        </a>
+        <button class="card-fav" (click)="toggleFavorite(p, $event)" title="Favoritar">
+          <span [class.fav]="isFavorite(p)">{{ isFavorite(p) ? '♥' : '♡' }}</span>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-title">{{p.nome}}</div>
+        <div class="card-price">{{p.preco}}</div>
+      </div>
+      <button class="add-btn" (click)="addToCart(p)">+</button>
+    </div>
+  </section>
+
+  <nav class="bottom-nav">
+    <a routerLink="/cliente" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-item" title="Home">
+      <!-- Home SVG -->
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+        <path d="M3 11.5L12 4l9 7.5" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M5 12v7a1 1 0 001 1h3v-5h6v5h3a1 1 0 001-1v-7" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+
+    <a routerLink="/cliente/carrinho" routerLinkActive="active" class="nav-item" title="Carrinho">
+      <!-- Cart SVG -->
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+        <path d="M6 6h15l-1.5 9h-11L6 6z" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6 6L4 2H2" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="10" cy="20" r="1" fill="#111" />
+        <circle cx="18" cy="20" r="1" fill="#111" />
+      </svg>
+        <span class="cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+    </a>
+
+    <a routerLink="/cliente/historico" routerLinkActive="active" class="nav-item" title="Favoritos">
+      <!-- Heart SVG -->
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+        <path d="M20.8 7.2a4.6 4.6 0 00-6.5 0L12 9.5l-2.3-2.3a4.6 4.6 0 00-6.5 6.5L12 21l8.8-7.3a4.6 4.6 0 000-6.5z" stroke="#111" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </nav>
+</div>
+
+<style>
+  .home-root { padding: 12px; max-width: 420px; margin: 0 auto; }
+  .home-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px }
+  .greetings{ flex:1; min-width:0 }
+  .greetings .hello { font-weight:600 }
+  .address{ color:#444; font-size:14px; margin-top:6px }
+  .addr-line1{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .addr-line2{ font-size:13px; color:#666; margin-top:2px }
+  .search-area input { width:100%; padding:10px 12px; border-radius:999px; border:1px solid #e6e6e6 }
+  .banner { margin:12px 0 }
+  .banner-inner{ background:linear-gradient(90deg,#ff8c00,#ff5a3c); color:#fff; padding:12px 12px; border-radius:14px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 6px 18px rgba(255,140,0,0.12); overflow:hidden }
+  .banner-hero{ min-height:72px }
+  .banner-text{ display:flex; flex-direction:column; gap:2px }
+  .banner-title{ font-size:16px; font-weight:800; line-height:1; letter-spacing:0.2px }
+  .banner-sub{ font-size:16px; font-weight:800; line-height:1 }
+  .banner-deco{ width:72px; height:72px; border-radius:999px; background:rgba(255,255,255,0.06); transform:translateX(10px) translateY(-8px); box-shadow: inset -12px -6px 24px rgba(255,255,255,0.03) }
+  @media(min-width:420px){ .banner-hero{ min-height:88px } }
+  .categories { display:flex; gap:8px; overflow:auto; padding:8px 0; justify-content:center; flex-wrap:wrap }
+  .categories button{ padding:8px 12px; border-radius:999px; border:1px solid #e9ece8; background:#fff; color:#6b6b6b; font-weight:600; white-space:nowrap }
+  .categories button.active { background:#111; color:#fff; box-shadow:0 4px 10px rgba(0,0,0,0.06) }
+  @media(max-width:420px){ .categories{ gap:8px; padding:6px 6px } }
+  .products-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:12px }
+  .card{ background:#fff; border-radius:10px; padding:8px; position:relative; box-shadow:0 4px 12px rgba(0,0,0,0.06) }
+  .card-image{ position:relative }
+  .card-image img{ border-radius:8px; display:block }
+  .card-fav{ position:absolute; left:12px; bottom:12px; width:44px; height:44px; border-radius:999px; background:#fff; border:1px solid #fff; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 8px 20px rgba(0,0,0,0.14); z-index:6 }
+  .card-fav span{ color:#ffbdb0; font-size:20px; line-height:1; display:block }
+  .card-fav span.fav{ color:#ff5a3c }
+  .card img{ width:100%; height:120px; object-fit:cover; border-radius:8px }
+  .card-body{ padding-top:8px }
+  .card-title{ font-weight:600; font-size:14px }
+  .card-price{ color:#ff8c00; margin-top:6px }
+  .add-btn{ position:absolute; right:8px; bottom:8px; background:#ECF1E8; color:#FF6200; border-radius:999px; width:36px; height:36px; border:none; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; line-height:1; padding:0 }
+  .bottom-nav{ position:fixed; left:0; right:0; bottom:0; max-width:420px; margin:0 auto; display:flex; justify-content:space-around; padding:10px 0; background:transparent }
+
+  /* Bottom nav icons styling and active animation */
+  .bottom-nav .nav-item{ display:flex; align-items:center; justify-content:center; width:64px; height:64px; color:#777; transition: color .18s ease; }
+  .bottom-nav .nav-item svg{ width:28px; height:28px; transition: transform .2s cubic-bezier(.2,.9,.3,1), filter .18s ease; transform-origin:center; }
+  .bottom-nav .nav-item.active{ color:#ff8c00; }
+  .bottom-nav .nav-item.active svg{ transform: translateY(-6px) scale(1.18) rotate(-6deg); filter: drop-shadow(0 6px 12px rgba(255,140,0,0.15)); }
+  /* Force SVG paths to follow currentColor where possible */
+  .bottom-nav .nav-item svg path{ stroke: currentColor !important; fill: none !important }
+</style>

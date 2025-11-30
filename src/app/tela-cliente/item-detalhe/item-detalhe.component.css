@@ -1,0 +1,29 @@
+/* Detalhe do item - estilo inspirado no design fornecido */
+.detail-root { padding: 20px 18px 96px; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:#222 }
+.detail-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px }
+.back-btn { background:transparent; border:none; font-size:20px; color:#333 }
+.fav-btn { background:transparent; border:none; padding:6px; border-radius:50%; display:flex; align-items:center; justify-content:center }
+.fav-btn svg { stroke:#6b6b6b; }
+.fav-btn.active svg path { fill:#ff6b6b; stroke: #ff6b6b }
+.detail-image { display:flex; justify-content:center; margin:6px 0 18px }
+/* Dimensões exatas solicitadas: width:335px; height:367px; border-radius grande */
+.detail-image img {
+	width: 335px;
+	height: 367px;
+	max-width: 100%;
+	border-radius: 22px; /* Corner radius/lg */
+	object-fit: cover;
+	display: block;
+}
+.detail-body { padding: 0 6px }
+.title-row { display:flex; justify-content:space-between; align-items:center }
+.title { font-size:20px; margin:0; font-weight:700 }
+.qty-inline { display:flex; align-items:center; gap:8px }
+.circle-btn { width:36px; height:36px; border-radius:50%; border:1px solid #e6e6e6; background:#fff; display:flex; align-items:center; justify-content:center; font-size:18px }
+.qty-number { min-width:28px; text-align:center }
+.description { color:#666; margin-top:14px; line-height:1.45 }
+.detail-footer { position:fixed; left:0; right:0; bottom:0; display:flex; gap:12px; align-items:center; justify-content:space-between; padding:14px 18px; background:linear-gradient(180deg, rgba(255,255,255,0.95), #fff); box-shadow:0 -6px 20px rgba(0,0,0,0.06) }
+.price { font-weight:700; font-size:18px }
+.add-cta { background:linear-gradient(180deg,#ff8a1a,#ff6b00); color:white; border:none; padding:12px 18px; border-radius:10px; min-width:180px }
+.loading { padding:24px }
+

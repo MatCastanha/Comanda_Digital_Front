@@ -1,0 +1,137 @@
+<div class="cart-container">
+
+  <header class="cart-header">
+    <button class="back-icon" title="Voltar" (click)="goBack()">←</button>
+    <h2>Meu Carrinho ({{ itensCarrinho.length }})</h2>
+    <button *ngIf="itensCarrinho.length > 0" class="clear-icon" title="Limpar" (click)="clearCart()">🗑️</button>
+  </header>
+
+  <main class="cart-list">
+    <div *ngIf="itensCarrinho.length === 0" class="empty-state">
+      <div class="empty-icon">🛒</div>
+      <p>Seu carrinho está vazio!</p>
+    </div>
+
+    <div *ngFor="let item of itensCarrinho" class="cart-item">
+
+      <a class="item-thumb" (click)="openDetail(item)">
+        <img *ngIf="item.UrlImage || item.urlImagem" [src]="item.UrlImage || item.urlImagem" [alt]="item.nome" class="item-image">
+        <div *ngIf="!(item.UrlImage || item.urlImagem)" class="item-placeholder">🍽️</div>
+      </a>
+
+      <div class="item-details">
+        <a class="item-name" (click)="openDetail(item)">{{ item.nome }}</a>
+        <p class="item-description">{{ item.descricao }}</p>
+      </div>
+
+      <div class="item-controls">
+        <div class="quantity-control">
+          <!-- Mostrar lixeira circular quando qtd=1 -->
+          <button *ngIf="item.quantidade===1" class="circle-btn" (click)="removerItem(item)" aria-label="Remover item">
+            <!-- Trash SVG (circular outline + trash) -->
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
+              <circle cx="12" cy="12" r="11" fill="#f2f3f2"></circle>
+              <path d="M9 11v5m6-5v5M7 7h10M10 7l1-2h2l1 2" stroke="#6b6b6b" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </button>
+
+          <!-- Mostrar botão de diminuir circular quando qtd>1 -->
+          <button *ngIf="item.quantidade>1" class="circle-btn" (click)="atualizarQuantidade(item, -1)" aria-label="Diminuir quantidade">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
+              <circle cx="12" cy="12" r="11" fill="#f2f3f2"></circle>
+              <path d="M8 12h8" stroke="#6b6b6b" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </button>
+
+          <span class="quantity-display">{{ item.quantidade }}</span>
+
+          <!-- Botão de somar (círculo com +) -->
+          <button class="circle-btn" (click)="atualizarQuantidade(item, 1)" aria-label="Aumentar quantidade">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
+              <circle cx="12" cy="12" r="11" fill="#f2f3f2"></circle>
+              <path d="M12 8v8M8 12h8" stroke="#6b6b6b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <span class="item-subtotal">R$ {{ item.subtotal | number:'1.2-2' }}</span>
+      </div>
+    </div>
+  </main>
+  <!-- Mostrar resumo/checkout e footer apenas quando houver itens -->
+  <section *ngIf="itensCarrinho.length > 0" class="cart-checkout">
+    <div class="checkout-cards">
+      <button type="button" class="card" (click)="goToPerfil()" title="Editar destino da entrega">
+        <div class="card-left">
+          <div class="card-label">Destino da entrega</div>
+          <div class="card-value">{{ endereco }}</div>
+        </div>
+        <div class="card-right">›</div>
+      </button>
+
+      <button type="button" class="card">
+        <div class="card-left">
+          <div class="card-label">Método de pagamento</div>
+          <div class="card-value">{{ pagamento }}</div>
+        </div>
+        <!-- seta removida: método de pagamento não é editável -->
+      </button>
+    </div>
+
+    <section class="cart-summary">
+    <div class="summary-line">
+      <span>Subtotal</span>
+      <span>R$ {{ valorTotal | number:'1.2-2' }}</span>
+    </div>
+    <div class="summary-line">
+      <span>Taxa de entrega</span>
+      <span class="shipping-value">R$ {{ shipping | number:'1.2-2' }}</span>
+    </div>
+    
+    <div class="summary-line total">
+      <span>Total</span>
+      <span>R$ {{ (valorTotal + 10) | number:'1.2-2' }}</span>
+    </div>
+    </section>
+
+    <!-- Footer fixo com preço grande e botão CTA: Finalizar pedido -->
+    <div class="cart-footer">
+      <div class="footer-left">
+        <div class="footer-total-label">R$ {{ (valorTotal + shipping) | number:'1.2-2' }}</div>
+      </div>
+      <div class="footer-right">
+        <button class="continue-btn" (click)="finalizarPedido()" [disabled]="savingOrder">
+          <span *ngIf="!savingOrder">Finalizar pedido</span>
+          <span *ngIf="savingOrder">Enviando...</span>
+        </button>
+      </div>
+    </div>
+
+  </section>
+  
+</div>
+
+<!-- bottom nav (same as home) -->
+<nav class="bottom-nav">
+  <a routerLink="/cliente" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-item" title="Home">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <path d="M3 11.5L12 4l9 7.5" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M5 12v7a1 1 0 001 1h3v-5h6v5h3a1 1 0 001-1v-7" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </a>
+
+  <a routerLink="/cliente/carrinho" routerLinkActive="active" class="nav-item" title="Carrinho">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <path d="M6 6h15l-1.5 9h-11L6 6z" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 6L4 2H2" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="10" cy="20" r="1" fill="#111" />
+      <circle cx="18" cy="20" r="1" fill="#111" />
+    </svg>
+    <span class="cart-badge" *ngIf="itensCarrinho.length > 0">{{ itensCarrinho.length }}</span>
+  </a>
+
+  <a routerLink="/cliente/historico" routerLinkActive="active" class="nav-item" title="Favoritos">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <path d="M20.8 7.2a4.6 4.6 0 00-6.5 0L12 9.5l-2.3-2.3a4.6 4.6 0 00-6.5 6.5L12 21l8.8-7.3a4.6 4.6 0 000-6.5z" stroke="#111" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </a>
+</nav>

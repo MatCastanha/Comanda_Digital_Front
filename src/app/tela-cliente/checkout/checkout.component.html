@@ -1,0 +1,45 @@
+<div class="checkout-root">
+	<header class="checkout-header">
+		<button class="back" (click)="voltar()">←</button>
+		<h2>Checkout</h2>
+	</header>
+
+	<section class="checkout-cards">
+		<button class="card" (click)="/* abrir seleção de endereço (futuro) */">
+			<div class="card-left">
+				<div class="card-label">Destino da entrega</div>
+				<div class="card-value">{{ endereco }}</div>
+			</div>
+			<div class="card-right">›</div>
+		</button>
+
+		<button class="card" (click)="/* método de pagamento - só entrega */">
+			<div class="card-left">
+				<div class="card-label">Método de pagamento</div>
+				<div class="card-value">{{ pagamento }}</div>
+			</div>
+			<div class="card-right">›</div>
+		</button>
+	</section>
+
+	<section class="checkout-summary">
+		<div class="summary-line">
+			<span>Subtotal</span>
+			<span>R$ {{ valorSubtotal | number:'1.2-2' }}</span>
+		</div>
+
+		<div class="summary-line">
+			<span>Taxa de entrega</span>
+			<span class="shipping">R$ {{ shipping | number:'1.2-2' }}</span>
+		</div>
+
+		<div class="summary-line total">
+			<span>Total</span>
+			<span class="total-value">R$ {{ (valorSubtotal + shipping) | number:'1.2-2' }}</span>
+		</div>
+	</section>
+
+	<div class="checkout-footer">
+		<button class="finish-btn" (click)="finalizarPedido()">Finalizar pedido</button>
+	</div>
+</div>

@@ -1,0 +1,63 @@
+<!-- Modal de edição de item -->
+<!-- Explicações rápidas em cada bloco para facilitar manutenção -->
+<div class="modal-overlay">
+  <div class="modal-content" [@slideIn]="'in'">
+    
+    <!-- Título e subtítulo -->
+    <h2 class="modal-title">Editar Item</h2>
+    <p class="modal-subtitle">Atualize as informações do item do cardápio</p>
+    
+    <!-- Form que dispara onSubmit() no TS -->
+    <form (ngSubmit)="onSubmit()">
+      
+      <!-- Preview da imagem: usa editForm.foto (pode ser URL ou base64) -->
+      <div class="image-preview-container">
+          <img [src]="editForm.UrlImage || 'placeholder.jpg'" alt="Imagem do Item" class="item-image-preview">
+      </div>
+
+     <!-- Input de imagem: texto (URL/base64) + input file escondido -->
+     <div class="form-group">
+       <label for="imagem">URL ou Arquivo de Imagem</label>
+       <div class="image-input-container">
+         <input type="text" id="imagem" name="imagem" placeholder="URL da imagem" [(ngModel)]="editForm.UrlImage" name="foto">
+         <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept="image/png">
+         <span class="upload-icon" (click)="fileInput.click()"> 📎 </span>
+       </div>
+     </div>
+
+      <!-- Nome do item (obrigatório) -->
+      <div class="form-group">
+        <label>Nome do Item *</label>
+        <input type="text" [(ngModel)]="editForm.nome" name="nome" required>
+      </div>
+
+      <!-- Categoria e preço lado a lado -->
+      <div class="form-row">
+          <div class="form-group">
+              <label>Categoria do Item *</label>
+              <select [(ngModel)]="editForm.categoria" name="categoria" required>
+                  <option value="Pizza">Pizza</option>
+                  <option value="Doce">Doce</option>
+                  <option value="Bebida">Bebida</option>
+              </select>
+          </div>
+          <div class="form-group">
+              <label>Preço *</label>
+              <input type="text" [(ngModel)]="editForm.preco" name="preco" required>
+          </div>
+      </div>
+
+      <!-- Descrição -->
+      <div class="form-group">
+        <label>Descrição *</label>
+        <textarea [(ngModel)]="editForm.descricao" name="descricao" rows="4" required></textarea>
+      </div>
+
+      <!-- Ações: cancelar ou salvar (salvar desabilitado se campos obrigatórios vazios) -->
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="onCancel()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="!editForm.nome || !editForm.preco || !editForm.categoria">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>

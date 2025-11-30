@@ -1,0 +1,103 @@
+
+/* Importar fonte Poppins para fidelidade ao Figma */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+
+/* 2. Estrutura Fundamental: Garante que a base da página ocupe 100% da tela */
+html, body {
+  /* Margem e Padding zerados (já estava certo, mas reforçamos) */
+  margin: 0; 
+  padding: 0;
+  
+  /* Garantia de 100% */
+  height: 100%; 
+  width: 100%;
+  
+  font-family: 'Poppins', Arial, sans-serif;
+  
+  /* Nova Regra: Força o body a ser flexível (o que ajuda a ignorar margens estranhas) */
+  display: flex; 
+  flex-direction: column;
+
+  background-color: var(--light-gray-bg); 
+}
+
+
+/* 3. Variáveis Globais de CSS: Centraliza as cores e valores reutilizáveis */
+:root {
+  --orange-header: #FF8C00; 
+  --white-bg: #FFFFFF;
+  --dark-text: #333333;
+  --light-gray-bg: #F5F5F5; /* Cor de fundo principal da aplicação */
+  --border-color: #E0E0E0;
+  --hover-orange: #ff9d2a;
+}
+
+/* === OVERRIDES para painel.component (correções rápidas solicitadas) === */
+/* Forçar números das badges em branco */
+.column-title.orange-header .status-count,
+.column-title.green-header .status-count,
+.column-title.blue-header .status-count,
+.column-title.red-header .status-count {
+  color: #ffffff !important;
+}
+
+/* Garantir tamanho e visibilidade do quadrado de contagem */
+.status-count {
+  width: 48px !important;
+  height: 40px !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+}
+
+/* Aumentar a data no header conforme solicitado */
+.header-right .date {
+  font-size: 18px !important;
+  color: rgba(255,255,255,0.95) !important;
+}
+
+/* Fim dos overrides rápidos */
+
+/* Bottom nav - global styles (home / carrinho / historico) */
+.bottom-nav{ position:fixed; left:0; right:0; bottom:0; max-width:420px; margin:0 auto; display:flex; justify-content:space-around; padding:10px 0; background:transparent; z-index:50 }
+.bottom-nav .nav-item{ display:flex; align-items:center; justify-content:center; width:64px; height:64px; color:#777; transition: color .18s ease }
+.bottom-nav .nav-item svg{ width:28px; height:28px; transition: transform .2s cubic-bezier(.2,.9,.3,1), filter .18s ease; transform-origin:center }
+.bottom-nav .nav-item.active{ color:#ff8c00 }
+.bottom-nav .nav-item.active svg{ transform: translateY(-6px) scale(1.18) rotate(-6deg); filter: drop-shadow(0 6px 12px rgba(255,140,0,0.15)); }
+.bottom-nav .nav-item svg path{ stroke: currentColor !important; fill: none !important }
+
+/* Make SVG circles (ex: carrinho 'feet') follow currentColor so they turn orange when active/hover */
+.bottom-nav .nav-item svg circle{ fill: currentColor !important; }
+
+/* Subtle hover transform + glow on the icon SVG itself for better feedback (home/heart/carrinho) */
+.bottom-nav .nav-item:hover svg{ transform: translateY(-3px) scale(1.06); filter: drop-shadow(0 6px 12px rgba(255,140,0,0.12)); }
+
+/* Badge do carrinho (bolinha laranja com número) */
+.bottom-nav .nav-item{ position:relative }
+.bottom-nav .cart-badge{
+  position:absolute;
+  /* ajustar posição próxima ao canto superior direito do ícone */
+  top:6px;
+  right:12px;
+  /* manter badge pequeno e proporcional ao ícone */
+  min-width:16px;
+  height:16px;
+  padding:0 6px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:#FF6200;
+  color:#fff;
+  font-size:11px;
+  font-weight:700;
+  line-height:1;
+  border-radius:999px;
+  box-shadow:0 4px 8px rgba(0,0,0,0.08);
+  border:2px solid #fff; /* pequena borda branca para destaque sobre o fundo */
+  max-width:22px; /* evita que cresça demais */
+  padding:0 4px; 
+}

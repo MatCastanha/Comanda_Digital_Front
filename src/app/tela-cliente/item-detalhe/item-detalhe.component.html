@@ -1,0 +1,42 @@
+<!-- Item Detalhe - visual de detalhe do produto -->
+<div class="detail-root" *ngIf="dish; else loading">
+	<header class="detail-header">
+		<button class="back-btn" (click)="goBack()" aria-label="Voltar">←</button>
+		<button class="fav-btn" (click)="toggleFavorite()" [class.active]="isFavorite" aria-label="Favoritar">
+			<!-- heart svg -->
+			<svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+				<path d="M20.8 7.2a4.6 4.6 0 00-6.5 0L12 9.5l-2.3-2.3a4.6 4.6 0 00-6.5 6.5L12 21l8.8-7.3a4.6 4.6 0 000-6.5z"
+				      [attr.fill]="isFavorite ? '#ff5a3c' : 'none'"
+				      [attr.stroke]="isFavorite ? '#ff5a3c' : '#6b6b6b'"
+				      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+			    </svg>
+		</button>
+	</header>
+
+	<div class="detail-image">
+		<img [src]="dish.UrlImage || 'https://placehold.co/600x360'" [alt]="dish.nome" />
+	</div>
+
+	<div class="detail-body">
+		<div class="title-row">
+			<h1 class="title">{{dish.nome}}</h1>
+			<div class="qty-inline">
+				<button class="circle-btn" (click)="atualizarQuantidadeFromDetail(-1)">-</button>
+				<div class="qty-number">{{quantidade}}</div>
+				<button class="circle-btn" (click)="atualizarQuantidadeFromDetail(1)">+</button>
+			</div>
+		</div>
+
+		<p class="description">{{dish.descricao}}</p>
+	</div>
+
+	<footer class="detail-footer">
+		<div class="price">{{ getTotalDisplay() }}</div>
+		<button class="add-cta" (click)="addToCart()">Adicionar ao Carrinho</button>
+	</footer>
+</div>
+
+<ng-template #loading>
+	<div class="loading">Carregando...</div>
+</ng-template>
+

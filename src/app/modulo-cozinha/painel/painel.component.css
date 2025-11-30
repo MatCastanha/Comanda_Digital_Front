@@ -1,0 +1,504 @@
+/* ============================================================================
+   1. FUNDO PRINCIPAL E CABEÇALHO - Estilos do Header e Container
+   ============================================================================ */
+
+/* Container principal - Ocupa a tela inteira */
+:host {
+    display: flex;                    /* Usa flexbox para organizar conteúdo verticalmente */
+    flex-direction: column;           /* Coloca items um abaixo do outro */
+    height: 100vh;                   /* Usa 100% da altura da viewport */
+    background-color: #242424;       /* Fundo cinza escuro */
+    font-family: sans-serif;         /* Fonte padrão */
+    margin: 0;                       /* Remove margens padrão */
+    padding: 0;                      /* Remove padding padrão */
+}
+
+/* Header (Cabeçalho) com logo e hora - Primeira seção visível */
+.app-header {
+    display: flex;                   /* Flexbox para organizar conteúdo */
+    justify-content: space-between;  /* Espaça itens para os lados (logo esquerda, hora direita) */
+    align-items: center;             /* Centraliza verticalmente */
+    background-color: #ff6600;       /* Fundo laranja (cor da marca) */
+    color: white;                    /* Texto branco */
+    padding: 20px 40px;              /* Espaçamento interno */
+    flex-shrink: 0;                  /* Não diminui ao ocupar espaço */
+}
+
+/* Sombra sutil do header (efeito de elevação como no Figma) */
+.app-header {
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+}
+
+/* Lado esquerdo do header: logo + nome da pizzaria + título */
+.header-left { 
+    display: flex;                   /* Flexbox horizontal */
+    align-items: center;             /* Centraliza itens verticalmente */
+    gap: 20px;                       /* Espaço entre logo e título */
+}
+
+/* Caixa da logo (quadrado branco com bordas arredondadas) */
+.logo-box { 
+    width: 254px;                    /* Largura fixa da caixa */
+    height: 243px;                   /* Altura fixa da caixa */
+    background-color: white;         /* Fundo branco para a logo */
+    border-radius: 45px;             /* Cantos muito arredondados */
+    display: flex;                   /* Flexbox para centralizar a imagem */
+    justify-content: center;         /* Centraliza horizontalmente */
+    align-items: center;             /* Centraliza verticalmente */
+    flex-shrink: 0;                  /* Não encolhe quando há espaço limitado */
+}
+
+/* Imagem da logo dentro da caixa branca */
+.logo-image {
+    width: 100%;                     /* Usa 100% da largura da caixa */
+    height: 100%;                    /* Usa 100% da altura da caixa */
+    object-fit: cover;               /* Mantém proporção e preenche a caixa */
+    border-radius: 45px;             /* Mesmo valor que a caixa para ficar redonda */
+}
+
+/* Responsividade: Adapta para telas menores (tablet/mobile) */
+@media (max-width: 1100px) {
+    .logo-box { width: 180px; height: 170px; }  /* Logo menor em telas pequenas */
+    .pizzeria-name { font-size: 28px; }         /* Reduz tamanho do nome */
+    .management-title { font-size: 20px; }      /* Reduz tamanho do título */
+}
+
+/* Grupo de títulos: Nome da pizzaria + Título da página */
+.title-group {
+    display: flex;                   /* Flexbox vertical */
+    flex-direction: column;          /* Items um embaixo do outro */
+    gap: 4px;                        /* Pequeno espaço entre items */
+}
+
+/* Nome da Pizzaria (texto grande e chamativo) */
+.pizzeria-name {
+    font-size: 40px;                 /* Texto grande e destaque */
+    font-weight: 500;                /* Peso médio da fonte */
+    font-family: 'Poppins', sans-serif;  /* Fonte moderna e elegante */
+    letter-spacing: 2%;              /* Espaço adicional entre letras */
+    color: rgba(255, 255, 255, 0.95); /* Branco quase opaco */
+}
+
+/* Título Principal (Gestão de Pedidos da Cozinha) */
+.management-title { 
+    font-size: 32px;                 /* Texto grande */
+    font-weight: 500;                /* Peso médio */
+    font-family: 'Poppins', sans-serif; /* Fonte moderna */
+    letter-spacing: 2%;              /* Espaço entre letras */
+    line-height: 100%;               /* Sem espaço extra entre linhas */
+    margin: 0;                       /* Remove margin padrão */
+}
+
+/* Lado direito do header: Hora e Data */
+.header-right { 
+    text-align: right;               /* Alinha texto para a direita */
+    display: flex;                   /* Flexbox vertical */
+    flex-direction: column;          /* Items um embaixo do outro */
+    gap: 4px;                        /* Pequeno espaço entre items */
+    min-width: 200px;                /* Largura mínima para evitar quebra */
+    align-items: flex-end;           /* Alinha items para o canto direito */
+}
+
+/* Hora (HH:MM:SS) - Exibição em tempo real */
+.header-right .time {
+    font-size: 28px;                 /* Texto grande e legível */
+    font-weight: 700;                /* Muito negrito para destaque */
+    color: #ffffff;                  /* Branco puro */
+}
+
+/* Data (Dia, mês, ano) - Abaixo da hora */
+.header-right .date {
+    font-size: 14px;                 /* Texto pequeno e discreto */
+    color: rgba(255, 255, 255, 0.95); /* Branco com leve transparência */
+}
+
+/* ============================================================================
+   2. BARRA DE AÇÃO (Escura) - Busca e Botão de Atualizar
+   ============================================================================ */
+
+/* Container da barra de ação (onde ficam busca e botão) */
+.action-bar {
+    display: flex;                   /* Flexbox horizontal */
+    background-color: #444444;       /* Fundo cinza escuro */
+    padding: 10px 30px;              /* Espaçamento interno */
+    align-items: center;             /* Centraliza items verticalmente */
+    margin-bottom: 0;                /* Sem espaço embaixo */
+    flex-shrink: 0;                  /* Não diminui ao ocupar espaço */
+}
+
+/* Grupo de busca (container com input) */
+.search-input-group { 
+    flex-grow: 1;                    /* Expande para ocupar espaço disponível */
+    display: flex;                   /* Flexbox horizontal */
+    align-items: center;             /* Centraliza items verticalmente */
+    background-color: #2e2e2e;       /* Fundo mais escuro para contraste */
+    border-radius: 6px;              /* Cantos ligeiramente arredondados */
+    padding: 8px 12px;               /* Espaçamento interno */
+    max-width: 520px;                /* Largura máxima da caixa */
+    margin-right: 12px;              /* Espaço até o botão */
+}
+
+/* Ícone da lupa (busca) */
+.search-icon { 
+    margin-right: 8px;               /* Espaço até o input */
+    opacity: 0.95;                   /* Texto quase opaco */
+}
+
+/* Campo de input (caixa de texto) */
+.search-input { 
+    flex-grow: 1;                    /* Expande para ocupar espaço */
+    background: none;                /* Sem fundo (herda do container) */
+    border: none;                    /* Sem borda */
+    color: white;                    /* Texto branco */
+    outline: none;                   /* Sem contorno ao focar */
+    font-size: 16px;                 /* Tamanho de fonte legível */
+}
+
+/* Botão de atualizar (ícone circular) */
+.refresh-button { 
+    background-color: #ff6600;       /* Laranja (cor da marca) */
+    color: white;                    /* Ícone branco */
+    border: none;                    /* Sem borda */
+    border-radius: 50%;              /* Formato circular */
+    width: 44px;                     /* Largura */
+    height: 44px;                    /* Altura (quadrado para formar círculo) */
+    display: flex;                   /* Flexbox para centralizar ícone */
+    align-items: center;             /* Centraliza verticalmente */
+    justify-content: center;         /* Centraliza horizontalmente */
+    cursor: pointer;                 /* Muda cursor para mão */
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25); /* Sombra para efeito de elevação */
+}
+
+/* Ícone SVG dentro do botão */
+.refresh-button svg { 
+    width: 18px;                     /* Tamanho do ícone */
+    height: 18px;                    /* Mantém proporção */
+}
+
+/* Badges de cores para cada coluna (A Preparar, Em Preparo, Pronto, Entregue) */
+/* Vermelho para "A Preparar" */
+.column-title.red-header .badge, 
+.column-title.red-header .status-count { 
+    background-color: #FF6D6D;       /* Fundo vermelho vibrante */
+    color: #fff;                     /* Texto branco */
+    box-shadow: 0 6px 18px rgba(255,109,109,0.28); /* Sombra vermelha suave */
+}
+
+/* Laranja para "Em Preparo" */
+.column-title.orange-header .badge, 
+.column-title.orange-header .status-count { 
+    background-color: #FFC355;       /* Fundo laranja */
+    color: #222;                     /* Texto escuro para contraste */
+    box-shadow: 0 6px 18px rgba(255,195,85,0.28); /* Sombra laranja suave */
+}
+
+/* Verde para "Pronto" */
+.column-title.green-header .badge, 
+.column-title.green-header .status-count { 
+    background-color: #89FF89;       /* Fundo verde claro */
+    color: #222;                     /* Texto escuro para contraste */
+    box-shadow: 0 6px 18px rgba(137,255,137,0.28); /* Sombra verde suave */
+}
+
+/* Azul para "Entregue" */
+.column-title.blue-header .badge, 
+.column-title.blue-header .status-count { 
+    background-color: #BFE8FF;       /* Fundo azul claro */
+    color: #222;                     /* Texto escuro para contraste */
+    box-shadow: 0 6px 18px rgba(30,144,255,0.18); /* Sombra azul suave */
+}
+
+/* Contador de pedidos (número de items em cada coluna) */
+.status-count { 
+    display: inline-flex;            /* Flexbox inline para manter no fluxo */
+    align-items: center;             /* Centraliza conteúdo verticalmente */
+    justify-content: center;         /* Centraliza conteúdo horizontalmente */
+    width: 48px;                     /* Largura */
+    height: 40px;                    /* Altura */
+    border-radius: 8px;              /* Cantos arredondados */
+    font-weight: 700;                /* Número em negrito */
+    font-size: 16px;                 /* Tamanho legível */
+    color: #fff;                     /* Texto branco */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.16); /* Sombra geral */
+}
+
+/* ============================================================================
+   3. KANBAN PRINCIPAL - Grid de Colunas e Containers
+   ============================================================================ */
+
+/* Container principal do Kanban (quadro de pedidos) */
+.kanban-board {
+    width: 100%;                     /* Usa 100% da largura */
+    flex: 1;                         /* Expande para ocupar espaço disponível */
+    display: flex;                   /* Flexbox vertical */
+    flex-direction: column;          /* Items um embaixo do outro */
+    background-color: #242424;       /* Fundo cinza escuro */
+    overflow: hidden;                /* Esconde conteúdo que sai dos limites */
+}
+
+/* Grid que organiza as 4 colunas lado a lado */
+.kanban-columns-grid {
+    display: grid;                   /* Grid layout (melhor que flexbox para colunas) */
+    grid-template-columns: repeat(4, 1fr); /* 4 colunas de tamanho igual */
+    gap: 20px;                       /* Espaço entre colunas */
+    padding: 20px 30px 30px 30px;    /* Espaçamento interno */
+    flex: 1;                         /* Expande para ocupar espaço */
+    width: 100%;                     /* 100% de largura */
+    position: relative;              /* Necessário para CDK drag-drop funcionar */
+    overflow-x: auto;                /* Scroll horizontal se necessário */
+    overflow-y: hidden;              /* Sem scroll vertical */
+    min-height: 0;                   /* Respeita altura do container */
+}
+
+/* Cada coluna do Kanban (A Preparar, Em Preparo, Pronto, Entregue) */
+.kanban-column {
+    display: flex;                   /* Flexbox vertical */
+    flex-direction: column;          /* Items um embaixo do outro */
+    background-color: #333333;       /* Fundo cinza mais claro que o geral */
+    border-radius: 8px;              /* Cantos arredondados */
+    padding: 15px;                   /* Espaçamento interno */
+    height: 100%;                    /* 100% da altura do grid */
+    min-height: 0;                   /* Respeita altura do container pai */
+    overflow: hidden;                /* Esconde items que saem dos limites */
+}
+
+/* Cabeçalho de cada coluna (título + contagem) */
+.column-title {
+    font-size: 1.1em;                /* Texto um pouco maior */
+    font-weight: 700;                /* Muito negrito para destaque */
+    margin-bottom: 15px;             /* Espaço embaixo */
+    padding: 5px 10px;               /* Espaçamento interno */
+    border-radius: 4px;              /* Cantos arredondados */
+    display: flex;                   /* Flexbox horizontal */
+    justify-content: space-between;  /* Espaço entre título e contador */
+    align-items: center;             /* Centraliza verticalmente */
+    color: white;                    /* Texto branco */
+    flex-shrink: 0;                  /* Não diminui */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.12); /* Sombra para elevação */
+}
+
+/* Cores dos cabeçalhos das 4 colunas */
+.red-header { 
+    background-color: #ff4d4f;       /* Vermelho (A Preparar) */
+}
+
+.orange-header { 
+    background-color: #faad14;       /* Laranja (Em Preparo) */
+}
+
+.green-header { 
+    background-color: #52c41a;       /* Verde (Pronto) */
+}
+
+.blue-header { 
+    background-color: #1890ff;       /* Azul (Entregue) */
+}
+
+/* Badge genérico (pequeno label) */
+.badge {
+    padding: 6px 10px;               /* Espaçamento interno */
+    border-radius: 8px;              /* Cantos arredondados */
+    font-weight: 700;                /* Muito negrito */
+    font-size: 14px;                 /* Tamanho pequeno */
+    background-color: rgba(255,255,255,0.12); /* Branco semi-transparente */
+    color: #fff;                     /* Texto branco */
+}
+
+/* Badge específico para cada coluna com cores correspondentes */
+.column-title.red-header .badge { 
+    background-color: #ff4d4f;       /* Vermelho */
+    color: #fff;                     /* Texto branco */
+}
+
+.column-title.orange-header .badge { 
+    background-color: #faad14;       /* Laranja */
+    color: #fff;                     /* Texto branco */
+}
+
+.column-title.green-header .badge { 
+    background-color: #52c41a;       /* Verde */
+    color: #fff;                     /* Texto branco */
+}
+
+.column-title.blue-header .badge { 
+    background-color: #1890ff;       /* Azul */
+    color: #fff;                     /* Texto branco */
+}
+
+.task-list {
+    flex: 1;                         /* Expande para ocupar espaço disponível */
+    min-height: 0;                   /* Respeita altura do container pai */
+    padding: 5px 0;                  /* Pequeno espaçamento interno */
+    overflow-y: auto;                /* Scroll vertical se necessário */
+    overflow-x: hidden;              /* Sem scroll horizontal */
+}
+
+/* ============================================================================
+   4. CARDS DE PEDIDO - Estilos dos Cards Arrastáveis
+   ============================================================================ */
+
+/* Cartão de pedido (cada pedido é um card) */
+.order-card {
+    cursor: grab;                    /* Muda cursor para mão (pode arrastar) */
+    background-color: #f5f5f5;       /* Fundo branco acinzentado */
+    margin-bottom: 15px;             /* Espaço entre cards */
+    padding: 14px;                   /* Espaçamento interno */
+    border-radius: 12px;             /* Cantos bem arredondados */
+    border: 1px solid rgba(0,0,0,0.06); /* Borda clara */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18); /* Sombra para elevação */
+    flex-shrink: 0;                  /* Não encolhe */
+    transition: transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease; /* Animações suaves */
+}
+
+/* Card quando recebe atualização (transição de status) */
+.order-card.updated {
+    transform: scale(1.01);          /* Aumenta um pouco de tamanho */
+    box-shadow: 0 8px 22px rgba(0,128,0,0.14); /* Sombra verde suave */
+    background-color: #f6fff7;       /* Fundo com leve toque verde */
+}
+
+/* Efeito de glow quando card é movido para "A Preparar" */
+.order-card.updated[data-status="A PREPARAR"] {
+    box-shadow: 0 14px 34px rgba(255,109,109,0.34); /* Sombra vermelha */
+    background-color: rgba(255,109,109,0.06);       /* Fundo com toque vermelho */
+}
+
+/* Efeito de glow quando card é movido para "Em Preparo" */
+.order-card.updated[data-status="EM PREPARO"] {
+    box-shadow: 0 14px 34px rgba(255,195,85,0.34);  /* Sombra laranja */
+    background-color: rgba(255,195,85,0.06);        /* Fundo com toque laranja */
+}
+
+/* Efeito de glow quando card é movido para "Pronto" */
+.order-card.updated[data-status="PRONTO"] {
+    box-shadow: 0 14px 34px rgba(137,255,137,0.34); /* Sombra verde */
+    background-color: rgba(137,255,137,0.06);       /* Fundo com toque verde */
+}
+
+/* Efeito de glow quando card é movido para "Entregue" */
+.order-card.updated[data-status="ENTREGUE"] {
+    box-shadow: 0 14px 34px rgba(30,144,255,0.24);  /* Sombra azul */
+    background-color: rgba(30,144,255,0.04);        /* Fundo com toque azul */
+}
+
+
+/* Card que acabou de ser movido - anima um pequeno "pop" */
+.order-card.just-moved {
+    animation: glow-pop 600ms ease forwards; /* Executa animação de glow */
+}
+
+/* Animação de "pop" quando card é movido */
+@keyframes glow-pop {
+    0% { 
+        box-shadow: 0 6px 18px rgba(0,0,0,0.18);    /* Sombra normal */
+    }
+    40% { 
+        transform: scale(1.02);                       /* Aumenta 2% */
+        box-shadow: 0 12px 28px rgba(0,128,0,0.18); /* Sombra maior */
+    }
+    100% { 
+        transform: scale(1);                          /* Volta ao tamanho normal */
+        box-shadow: 0 6px 18px rgba(0,0,0,0.18);    /* Sombra normal */
+    }
+}
+
+/* Cabeçalho do card (ID do pedido, mesa, tempo) */
+.card-header {
+    display: flex;                   /* Flexbox horizontal */
+    justify-content: space-between;  /* Espaço entre elementos */
+    margin-bottom: 8px;              /* Espaço embaixo */
+    padding-bottom: 8px;             /* Espaçamento interno embaixo */
+    color: #333333;                  /* Texto escuro */
+    border-bottom: 1px dashed rgba(0,0,0,0.06); /* Linha tracejada para separar */
+    flex-wrap: wrap;                 /* Quebra linha se necessário */
+    gap: 8px;                        /* Espaço entre items */
+}
+
+/* ID do pedido (número único) */
+.order-id { 
+    font-weight: 700;                /* Muito negrito */
+    min-width: 60px;                 /* Largura mínima */
+}
+
+/* Nome da mesa/cliente */
+.table-name {
+    font-size: 0.85em;               /* Texto menor */
+    color: #666666;                  /* Texto cinza médio */
+    font-weight: 500;                /* Negrito médio */
+}
+
+/* Tempo decorrido desde o pedido (ex: há 15 minutos) */
+.time-elapsed { 
+    font-weight: 500;                /* Negrito médio */
+    color: #666666;                  /* Texto cinza médio */
+    font-size: 0.85em;               /* Texto menor */
+    margin-left: auto;               /* Empurra para a direita */
+}
+
+/* Lista de itens do pedido (pratos/pizzas) */
+.order-items-list { 
+    list-style: none;                /* Remove bullets padrão */
+    padding: 0;                      /* Sem espaçamento interno */
+    margin: 0 0 15px 0;              /* Espaço embaixo */
+    font-size: 0.95em;               /* Texto ligeiramente menor */
+}
+
+/* Quantidade do item (número) */
+.item-qty { 
+    font-weight: 700;                /* Muito negrito */
+    color: #ff6600;                  /* Laranja (cor destaque) */
+    margin-right: 5px;               /* Espaço até o nome do item */
+}
+
+/* Botão de ação dentro do card (Próxima Etapa) */
+.action-button {
+    width: 100%;                     /* Usa 100% da largura do card */
+    padding: 10px;                   /* Espaçamento interno */
+    border: none;                    /* Sem borda */
+    border-radius: 4px;              /* Cantos ligeiramente arredondados */
+    color: white;                    /* Texto branco */
+    font-weight: 600;                /* Negrito para destaque */
+    cursor: pointer;                 /* Muda cursor para mão */
+    background-color: #212121;       /* Fundo muito escuro */
+}
+
+/* Efeito ao passar o mouse sobre o botão */
+.action-button:hover { 
+    background-color: #000000;       /* Fundo preto puro ao passar mouse */
+}
+
+/* Borda colorida à esquerda do card por status */
+/* Borda vermelha para "A Preparar" */
+.border-red-500 { 
+    border-left: 5px solid #ff4d4f;  /* Linha vermelha à esquerda */
+}
+
+/* Borda laranja para "Em Preparo" */
+.border-orange-500 { 
+    border-left: 5px solid #faad14;  /* Linha laranja à esquerda */
+}
+
+/* Borda verde para "Pronto" */
+.border-green-500 { 
+    border-left: 5px solid #52c41a;  /* Linha verde à esquerda */
+}
+
+/* Borda azul para "Entregue" */
+.border-blue-500 { 
+    border-left: 5px solid #1890ff;  /* Linha azul à esquerda */
+}
+
+/* Mensagem quando não há pedidos em uma coluna */
+.empty-state {
+    text-align: center;              /* Texto centralizado */
+    padding: 30px 10px;              /* Espaçamento interno */
+    color: #aaa;                     /* Texto cinza claro */
+    font-style: italic;              /* Texto em itálico */
+    border: 1px dashed #666;         /* Borda tracejada cinza */
+    border-radius: 4px;              /* Cantos arredondados */
+    background-color: #444;          /* Fundo cinza escuro */
+}
+
+
+
+

@@ -1,0 +1,14 @@
+/* Estilos básicos para a tela de busca móvel */
+.busca-root{ padding:16px; max-width:420px; margin:0 auto }
+.busca-header{ display:flex; align-items:center; gap:12px; margin-bottom:12px }
+.busca-header .back{ background:transparent; border:none; font-size:20px }
+.search-wrap{ flex:1 }
+.search-wrap input{ width:100%; padding:12px 14px; border-radius:14px; border:1px solid #f0e9e4; box-shadow:inset 0 1px 0 rgba(0,0,0,0.02); transition: box-shadow .18s ease, border-color .18s ease }
+.search-wrap input:focus, .search-wrap input:focus-visible{ outline: none; border-color: #FF6200; box-shadow: 0 0 0 4px rgba(255,98,0,0.12) }
+.recent h3{ font-size:14px; color:#666; margin:6px 0 }
+.recent ul{ list-style:none; padding:0; margin:8px 0; background:#fff; border-radius:10px; border:1px solid #f0f0f0 }
+.recent li{ padding:12px 14px; display:flex; gap:10px; align-items:center; cursor:pointer }
+.recent li + li{ border-top:1px solid #f5f5f5 }
+.recent .dot{ color:#bfbfbf; font-size:14px }
+.recent .term{ color:#333 }
+.recent .empty{ padding:12px; color:#999 }

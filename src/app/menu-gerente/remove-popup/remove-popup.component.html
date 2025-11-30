@@ -1,0 +1,13 @@
+<!-- Popup de confirmação de remoção -->
+<!-- Observação: o click on wrapper é interrompido no pai com stopPropagation para não fechar dropdowns acidentalmente -->
+<div class="remove-popup-content" (click)="$event.stopPropagation()">
+  
+  <!-- Mostra o nome do item para confirmação (itemName vem como Input) -->
+  <p>Tem certeza que deseja remover <strong>{{ itemName }}</strong> do cardápio?</p>
+  
+  <!-- Ações: Não cancela, Sim confirma a remoção -->
+  <div class="popup-actions">
+    <button class="btn-no" (click)="onCancel()">Não</button>
+    <button class="btn-yes" (click)="onConfirm()">Sim</button>
+  </div>
+</div>

@@ -11,7 +11,7 @@ import type { Order } from '../enums/order.model';
       <div *ngFor="let o of orders">
         <article class="hist-card">
           <div class="line"><strong>#{{o.id}}</strong> <span class="date">{{o.date}}</span></div>
-          <div class="addr">{{o.address}}</div>
+          <div class="addr">{{ getAddressWithoutComplement(o) || '—' }}</div>
         </article>
       </div>
     </div>
@@ -23,4 +23,14 @@ import type { Order } from '../enums/order.model';
     `
   ]
 })
-export class DeliveryHistoryListComponent { @Input() orders: Order[] = []; }
+export class DeliveryHistoryListComponent {
+  @Input() orders: Order[] = [];
+
+  // Remove trechos de complemento de um endereço (mesma lógica dos outros componentes)
+  getAddressWithoutComplement(o: any): string | null {
+    const raw = o?.address ?? o?.clientAddress ?? '';
+    if (!raw) return null;
+    const cleaned = raw.replace(/\b[Cc]omplemento\b[:\-\s]*[^\.\n]*/g, '').trim();
+    return cleaned.replace(/\s{2,}/g, ' ').replace(/^[,\-\s]+|[,\-\s]+$/g, '').trim();
+  }
+}

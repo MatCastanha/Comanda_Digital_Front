@@ -38,37 +38,48 @@ export class MotoboyComponent implements OnInit {
     this.loadRecentFromStorage();
   }
 
-  acceptOrder(order: Order){
-    // mover para a lista local "em rota" sem tocar no backend
-    this.pedidosDisponiveis = this.pedidosDisponiveis.filter(o => o.id !== order.id);
-    const inRoute: Order = {
-      id: order.id,
-      displayNumber: order.displayNumber ?? `Pedido Nº ${order.id}`,
-      date: order.date ?? '',
-      address: order.address ?? order.clientAddress ?? '',
-      restaurantAddress: order.restaurantAddress,
-      clientAddress: order.clientAddress,
-      items: order.items ?? [],
-      status: OrderStatus.ON_THE_WAY
-    };
-    this.inRouteOrders = [ inRoute, ...this.inRouteOrders ];
-    this.acceptedOrders = [ ...this.acceptedOrders, order.id ];
+  acceptOrder(order: any){
+    // Atualiza status no backend e, após sucesso, move o pedido entre listas
+    if(!order || !order.id) return;
+    this.orderService.updateStatus(order.id, OrderStatus.ON_THE_WAY).subscribe({
+      next: () => {
+        // remover das disponíveis
+        this.pedidosDisponiveis = this.pedidosDisponiveis.filter(o => o.id !== order.id);
+        // adiciona em rota com status atualizado
+        const inRoute: Order = {
+          id: order.id,
+          displayNumber: order.displayNumber ?? `Pedido Nº ${order.id}`,
+          date: order.date ?? '',
+          address: order.address ?? order.clientAddress ?? '',
+          restaurantAddress: order.restaurantAddress,
+          clientAddress: order.clientAddress,
+          items: order.items ?? [],
+          status: OrderStatus.ON_THE_WAY
+        };
+        this.inRouteOrders = [ inRoute, ...this.inRouteOrders ];
+        this.acceptedOrders = [ ...this.acceptedOrders, order.id ];
+      },
+      error: (e) => {
+        console.error('Falha ao aceitar pedido:', e);
+        alert('Falha ao aceitar o pedido. Tente novamente.');
+      }
+    });
   }
 
-  viewDetails(order: Order){ this.selectedOrder = order; }
+  viewDetails(order: any){ if(!order || order instanceof Event) return; this.selectedOrder = order; }
 
   closeDetails(){ this.selectedOrder = null; }
 
-  startDelivery(order?: Order | null){
-    if(!order) return;
+  startDelivery(order?: any){
+    if(!order || order instanceof Event) return;
     // apenas atualiza estado local para visual
     this.inRouteOrders = this.inRouteOrders.map(o => o.id === order.id ? { ...o, status: OrderStatus.ON_THE_WAY } : o) as Order[];
     if(this.selectedOrder) this.selectedOrder.status = OrderStatus.ON_THE_WAY;
     this.closeDetails();
   }
 
-  finishDelivery(order?: Order | null){
-    if(!order) return;
+  finishDelivery(order?: any){
+    if(!order || order instanceof Event) return;
     // confirmar entrega no backend
     this.orderService.updateStatus(order.id, OrderStatus.DELIVERED).subscribe({
       next: () => {
@@ -98,7 +109,7 @@ export class MotoboyComponent implements OnInit {
     });
   }
 
-  openCancel(order?: Order | null){ this.cancelTarget = order || null; this.showCancel = true; }
+  openCancel(order?: any){ this.cancelTarget = order || null; this.showCancel = true; }
 
   closeCancel(){ this.cancelTarget = null; this.showCancel = false; }
 
@@ -113,7 +124,8 @@ export class MotoboyComponent implements OnInit {
       restaurantAddress: this.cancelTarget!.restaurantAddress,
       clientAddress: this.cancelTarget!.clientAddress,
       items: this.cancelTarget!.items ?? [],
-      status: OrderStatus.ON_THE_WAY
+      // restored to available
+      status: OrderStatus.READY
     };
     this.pedidosDisponiveis = [o, ...this.pedidosDisponiveis];
     // remover se estava em rota
@@ -124,42 +136,35 @@ export class MotoboyComponent implements OnInit {
   }
 
   private loadAvailableOrders(){
-    // Busca ON_THE_WAY e READY em paralelo, mescla resultados e evita duplicatas.
-    // ON_THE_WAY -> inRouteOrders (já em rota)
-    // READY -> pedidosDisponiveis (apenas se não estiverem em rota)
-    this.orderService.findByStatus('ON_THE_WAY').subscribe({
-      next: (onRes: any) => {
-        const onMapped: Order[] = Array.isArray(onRes) ? onRes.map((r: any) => this.mapBackendToOrder(r)) : [];
+    // Carrega READY, ON_THE_WAY e DELIVERED em uma única chamada quando possível e aplica filtros exclusivos.
+    this.orderService.findByStatuses(['ON_THE_WAY', 'READY', 'DELIVERED']).subscribe({
+      next: (res: any) => {
+        const mapped: Order[] = Array.isArray(res) ? res.map((r: any) => this.mapBackendToOrder(r)) : [];
 
-        this.orderService.findByStatus('READY').subscribe({
-          next: (readyRes: any) => {
-            const readyMapped: Order[] = Array.isArray(readyRes) ? readyRes.map((r: any) => this.mapBackendToOrder(r)) : [];
+        // Deduplicar por id (mantendo a primeira ocorrência)
+        const unique: Order[] = mapped.reduce((acc: Order[], cur: Order) => {
+          if (!acc.some(a => a.id === cur.id)) acc.push(cur);
+          return acc;
+        }, []);
 
-            // Junta os dois tipos de pedidos em disponíveis
-            const allDisponiveis = [...readyMapped, ...onMapped];
-
-            // Atualiza lista de disponíveis e também os que já estão em rota
-            this.pedidosDisponiveis = allDisponiveis;
-            this.inRouteOrders = onMapped;
-          },
-          error: () => {
-            // Se READY falhar, mostra só os ON_THE_WAY
-            this.pedidosDisponiveis = [...onMapped];
-            this.inRouteOrders = onMapped;
-          }
-        });
+        // Aplicar filtros exclusivos por status
+        this.pedidosDisponiveis = unique.filter(o => o.status === OrderStatus.READY);
+        this.inRouteOrders = unique.filter(o => o.status === OrderStatus.ON_THE_WAY);
+        this.entregasRecentes = unique.filter(o => o.status === OrderStatus.DELIVERED);
       },
       error: () => {
-        // Se ON_THE_WAY falhar, tenta carregar só os READY
+        // fallback: tenta carregar READY apenas
         this.orderService.findByStatus('READY').subscribe({
           next: (r: any) => {
             const readyMapped: Order[] = Array.isArray(r) ? r.map((rr: any) => this.mapBackendToOrder(rr)) : [];
             this.pedidosDisponiveis = readyMapped;
             this.inRouteOrders = [];
+            this.entregasRecentes = [];
           },
           error: () => {
             this.pedidosDisponiveis = [];
             this.inRouteOrders = [];
+            this.entregasRecentes = [];
           }
         });
       }

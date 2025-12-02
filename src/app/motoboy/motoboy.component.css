@@ -16,8 +16,8 @@
 	--bg:#f6f7fb;
 	--card:#ffffff;
 	--muted:#6b7280;
-	--accent:#2563eb;
-	--accept:#10b981;
+	--accent:#ff7a00;   /* laranja institucional */
+	--accept:#10b981;   /* verde para aceitar */
 	--radius:12px;
 }
 
@@ -32,7 +32,16 @@ body{background:var(--bg);margin:0}
 
 .mf-container{padding:16px;max-width:760px;margin:0 auto}
 .mf-section{margin-bottom:20px}
-.mf-title{font-size:1rem;margin:6px 0 12px;color:#0b1221;font-weight:700}
+.mf-title{font-size:1.1rem;margin:6px 0 12px;color:var(--accent);font-weight:700}
+
+/* Icon before title to add visual cue */
+.mf-title::before{
+	content:'📦';
+	margin-right:8px;
+	display:inline-block;
+	transform:translateY(1px);
+	color:var(--accent);
+}
 
 .mf-card{background:var(--card);padding:14px;border-radius:var(--radius);box-shadow:0 6px 18px rgba(2,6,23,0.06);margin-bottom:12px}
 .mf-card-large{padding:18px}
@@ -43,11 +52,13 @@ body{background:var(--bg);margin:0}
 .card-address{color:#1f2937;font-size:.95rem;margin-bottom:10px}
 .card-actions{display:flex;justify-content:flex-end}
 
-.btn{border:0;padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;transition:all .18s ease}
-.btn:focus{outline:2px solid rgba(37,99,235,0.12)}
-.btn-primary{background:transparent;border:1px solid rgba(37,99,235,0.12);color:var(--accent)}
-.btn-primary:hover{background:rgba(211, 175, 77, 0.06)}
-.btn-accept{background:var(--accept);color:#fff}
+.btn{border:0;padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;transition:all .18s ease;transform-origin:center}
+.btn:focus{outline:2px solid rgba(255,122,0,0.12)}
+
+/* Botões - UNIFICADO: primary em laranja, accept em verde */
+.btn-primary{background:var(--accent);color:#fff;border:none;border-radius:10px;font-weight:600;transition:all .2s ease}
+.btn-primary:hover{filter:brightness(.95);transform:scale(1.02);box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+.btn-accept{background:var(--accept);color:#fff;border-radius:10px;border:none}
 .btn-accept:hover{filter:brightness(.95)}
 
 .mf-empty{padding:12px;text-align:center;color:var(--muted);background:var(--card);border-radius:10px}
@@ -65,13 +76,15 @@ body{background:var(--bg);margin:0}
 /* New styles for badges, pins, and exact layout */
 .mf-card{position:relative;padding-left:72px}
 .mf-card .card-body{display:block}
-.left-badge{position:absolute;left:12px;top:18px;width:48px;height:48px;border-radius:999px;background:#ff8a33;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:0 4px 10px rgba(0,0,0,0.08)}
+.left-badge{position:absolute;left:12px;top:18px;width:48px;height:48px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:0 4px 10px rgba(0,0,0,0.08);color:#fff;
+	background: linear-gradient(135deg, var(--accent), #ff9a4d);
+}
 .left-badge.gray{background:#9aa6b2;color:#fff}
 .left-badge.small{width:40px;height:40px;top:12px;left:12px}
-.left-badge.orange{background:#ff7a00}
+.left-badge.orange{background: linear-gradient(135deg, var(--accent), #ff9a4d)}
 
 /* lighter badge specifically for the "Em rota agora" card */
-.mf-card.em-rota .left-badge{ background:#ff9a4d }
+.mf-card.em-rota .left-badge{ background: linear-gradient(135deg, var(--accent), #ff9a4d) }
 
 .card-body .order-label-top{font-weight:700;color:#0b1221}
 .card-body .order-date{color:var(--muted);font-size:.88rem}
@@ -81,9 +94,10 @@ body{background:var(--bg);margin:0}
 .meta .card-address{font-size:.92rem;color:#374151}
 
 .btn.full{width:100%;display:block}
-.btn-primary{background:#ff7a00;color:#fff;border-radius:10px}
+/* ensure consistent primary/accept styles */
+.btn-primary{background:var(--accent);color:#fff;border-radius:10px}
 .btn-primary:hover{filter:brightness(.97)}
-.btn-accept{background:#ff7a00;color:#fff;border-radius:10px}
+.btn-accept{background:var(--accept);color:#fff;border-radius:10px}
 
 .chev{opacity:.8}
 
@@ -94,5 +108,13 @@ body{background:var(--bg);margin:0}
 .history-sub{color:var(--muted);font-size:.9rem;margin-top:6px}
 
 .small{font-size:.86rem;color:var(--muted)}
+
+/* Microinterações nos botões */
+.btn:hover{transform:scale(1.02);box-shadow:0 6px 18px rgba(2,6,23,0.06)}
+
+/* Borda lateral por status para reforçar hierarquia visual */
+.mf-card.ready{border-left:6px solid var(--accent);padding-left:66px}
+.mf-card.em-rota{border-left:6px solid var(--accept);padding-left:66px}
+.mf-card.delivered{border-left:6px solid #94a3b8;padding-left:66px}
 
 

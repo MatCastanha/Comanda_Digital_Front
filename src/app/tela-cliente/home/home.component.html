@@ -30,6 +30,8 @@
 	<button *ngFor="let c of categories" (click)="onCategory(c)" [class.active]="c===selectedCategory">{{c}}</button>
   </div>
 
+  <!-- Favoritos removidos: a lista de favoritos é gerida na tela de Favoritos/Histórico -->
+
   <section class="products-grid">
     <div *ngFor="let p of filtered" class="card">
       <div class="card-image">

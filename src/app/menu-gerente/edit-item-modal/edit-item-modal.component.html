@@ -19,9 +19,9 @@
      <div class="form-group">
        <label for="imagem">URL ou Arquivo de Imagem</label>
        <div class="image-input-container">
-         <input type="text" id="imagem" name="imagem" placeholder="URL da imagem" [(ngModel)]="editForm.UrlImage" name="foto">
-         <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept="image/png">
-         <span class="upload-icon" (click)="fileInput.click()"> 📎 </span>
+         <input type="text" id="imagem" name="imagem" placeholder="URL da imagem" [(ngModel)]="editForm.UrlImage">
+         <input type="file" id="fileInput" (change)="onFileSelected($event)" accept="image/png" style="display:none;">
+         <label class="upload-icon" for="fileInput"> 📎 </label>
        </div>
      </div>
 

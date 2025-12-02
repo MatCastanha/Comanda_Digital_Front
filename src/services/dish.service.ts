@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, from } from 'rxjs';
-import { map } from 'rxjs/operators'; 
+import { Observable, from, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators'; 
 import { Dish } from '../interfaces/dish.interface'; 
 import { MenuItem } from '../app/menu-gerente/overview/overview.component'; 
 
@@ -181,57 +181,49 @@ export class DishService {
     const urlImageValue = (menuItem as any).UrlImage || '';
     const priceNum = this.normalizePrice((menuItem as any).preco);
 
-    // Se o componente forneceu um File diretamente (mais confiável), use-o
+    // Sempre enviar multipart/form-data conforme regra: mesmo sem imagem, enviar campos como texto.
     const fileObj = (menuItem as any).file;
+    const form = new FormData();
+
+    // Campos de texto obrigatórios / comuns
+    form.append('name', (menuItem as any).nome || (menuItem as any).name || '');
+    form.append('nome', (menuItem as any).nome || (menuItem as any).name || '');
+    form.append('price', String(priceNum));
+    form.append('category', menuItem.categoria || '');
+    form.append('description', menuItem.descricao || '');
+    if (menuItem.tag) form.append('tag', menuItem.tag);
+
+    // Tratamento de imagem / URL
     if (fileObj && fileObj instanceof File) {
       const filename = (fileObj as any).name || `${(menuItem.nome || 'upload').replace(/\s+/g, '_')}.png`;
-      const form = new FormData();
       form.append('file', fileObj, filename);
-      // aliases para compatibilidade com backends variados
+      // aliases para compatibilidade
       form.append('image', fileObj, filename);
       form.append('imagem', fileObj, filename);
       form.append('fileImage', fileObj, filename);
       form.append('picture', fileObj, filename);
+      // informa também o nome do arquivo no campo urlImage para backends que o esperam
       form.append('urlImage', filename);
-      form.append('name', (menuItem as any).nome || (menuItem as any).name || '');
-      form.append('nome', (menuItem as any).nome || (menuItem as any).name || '');
-      form.append('price', String(priceNum));
-      form.append('category', menuItem.categoria || '');
-      form.append('description', menuItem.descricao || '');
-      if (menuItem.tag) form.append('tag', menuItem.tag);
-
-      return this.http.post<any>(API_URL, form).pipe(
-        map(json => this.mapDishToMenuItem(json))
-      );
-    }
-
-    // Se receber um dataURL (base64), converte para Blob e envia como multipart
-    if (typeof urlImageValue === 'string' && urlImageValue.startsWith('data:')) {
+    } else if (typeof urlImageValue === 'string' && urlImageValue.startsWith('data:')) {
+      // dataURL -> Blob
       const blob = this.dataURLtoBlob(urlImageValue);
       const filename = `${(menuItem.nome || 'upload').replace(/\s+/g, '_')}.png`;
-      const form = new FormData();
       form.append('file', blob, filename);
       form.append('image', blob, filename);
       form.append('imagem', blob, filename);
       form.append('fileImage', blob, filename);
       form.append('picture', blob, filename);
       form.append('urlImage', filename);
-      form.append('name', (menuItem as any).nome || (menuItem as any).name || '');
-      form.append('nome', (menuItem as any).nome || (menuItem as any).name || '');
-      form.append('price', String(priceNum));
-      form.append('category', menuItem.categoria || '');
-      form.append('description', menuItem.descricao || '');
-      if (menuItem.tag) form.append('tag', menuItem.tag);
-
-      return this.http.post<any>(API_URL, form).pipe(
-        map(json => this.mapDishToMenuItem(json))
-      );
+    } else if (typeof urlImageValue === 'string' && urlImageValue.trim() !== '') {
+      // é uma URL externa: enviar como campo de texto
+      form.append('urlImage', urlImageValue.trim());
+    } else {
+      // sem imagem: envia campo vazio para manter consistência multipart
+      form.append('urlImage', '');
     }
 
-    // Caso padrão: JSON com metadados (sem enviar base64 inline)
-    const dishToSend: Dish = this.mapMenuItemToDish(menuItem);
-    return this.http.post<Dish>(API_URL, dishToSend).pipe(
-      map(this.mapDishToMenuItem)
+    return this.http.post<any>(API_URL, form).pipe(
+      map(json => this.mapDishToMenuItem(json))
     );
   }
 
@@ -239,12 +231,24 @@ export class DishService {
   // ESTE MÉTODO CORRIGE O ERRO "A propriedade 'update' não existe"
   update(id: number, menuItem: MenuItem): Observable<MenuItem> { 
     const urlImageValue = (menuItem as any).UrlImage || '';
-    const priceNum = this.normalizePrice((menuItem as any).preco);
+    const fileObj = (menuItem as any).file;
     // Sempre enviar JSON via PUT para atualizar metadados.
-    // Se for necessário enviar/atualizar a imagem, use o endpoint dedicado PATCH /{id}/image.
     const dishToSend: Dish = this.mapMenuItemToDish(menuItem);
+
     return this.http.put<Dish>(`${API_URL}/${id}`, dishToSend).pipe(
-      map(this.mapDishToMenuItem)
+      // Se houver imagem nova (File ou dataURL), enviar via PATCH separadamente e devolver o resultado final.
+      switchMap((dishResp: Dish) => {
+        if (fileObj && fileObj instanceof File) {
+          return this.uploadImage(dishResp.id, fileObj);
+        }
+        if (typeof urlImageValue === 'string' && urlImageValue.startsWith('data:')) {
+          const blob = this.dataURLtoBlob(urlImageValue);
+          const filename = `${(menuItem.nome || 'upload').replace(/\s+/g, '_')}.png`;
+          return this.uploadImage(dishResp.id, blob, filename);
+        }
+        // Caso sem nova imagem: retornar o objeto mapeado do PUT
+        return of(this.mapDishToMenuItem(dishResp));
+      })
     );
   }
 

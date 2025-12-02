@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { DishService } from '../../../services/dish.service';
 import { forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { OrderStatus } from '../../enums/order-status.enum';
 
 @Component({
   selector: 'app-rastreio',
@@ -192,6 +193,21 @@ export class RastreioComponent implements OnInit, OnDestroy {
 
   // Close/back button
   close() { this.router.navigate(['/cliente']); }
+
+  // Show confirm button only when backend status maps to DELIVERED
+  get showConfirmButton(): boolean {
+    const raw = (this.rastreio?.status ?? '').toString();
+    const s = raw.trim().toUpperCase().replace(/[-\s]+/g, '_');
+    return s === (OrderStatus.DELIVERED) || s === 'FINISHED' || s === 'ENTREGUE';
+  }
+
+  confirmAndGoHome(){
+    // Optional: call confirmDelivery to ensure backend recorded it
+    if(this.orderId){
+      try{ this.rastreioService.confirmDelivery(this.orderId); } catch(e){}
+    }
+    this.router.navigate(['/cliente']);
+  }
 
   private enrichItemsForView(){
     const items = this.rastreio?.items || [];

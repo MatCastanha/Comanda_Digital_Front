@@ -41,6 +41,8 @@ export class HomeComponent implements OnInit {
     this.loadClientInfo();
   }
 
+  
+
   private loadClientInfo() {
     // Pergunta diretamente ao backend — backend é a fonte da verdade
     this.clientService.getClient().subscribe({

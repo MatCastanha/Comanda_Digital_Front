@@ -6,7 +6,7 @@
       <!-- Logo da Pizzaria -->
       <div class="logo-box">
         <!-- Usar /assets/logo.png por padrão; fallback para /favicon.ico -->
-        <img [src]="logoSrc" (error)="onLogoError()" alt="Logo" class="logo-image" />
+        <img src="{{ logoSrc }}" (error)="onLogoError()" alt="Logo" class="logo-image" />
       </div>
       <!-- Nome da Pizzaria e Título -->
       <div class="title-group">

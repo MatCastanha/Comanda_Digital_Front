@@ -15,7 +15,7 @@
 				<div class="eta-box">Tempo estimado:<div class="eta-val">{{ fixedEtaText }}</div></div>
 			</div>
 
-			<app-order-tracker [status]="rastreio?.status"></app-order-tracker>
+			<app-order-tracker [status]="rastreio.status"></app-order-tracker>
 
 			<div class="r-address">
 				<div class="addr-left">
@@ -50,6 +50,11 @@
 			<div class="r-summary">
 				<div class="last-update" *ngIf="lastUpdateText">Última atualização: {{ lastUpdateText }}</div>
 				<div class="total">Total: <strong>{{ displayTotal | currency:'BRL':'symbol':'1.2-2' }}</strong></div>
+			</div>
+
+			<!-- Confirmar entrega button: aparece apenas quando pedido está entregue -->
+			<div class="r-confirm" *ngIf="showConfirmButton">
+				<button class="btn-confirm" (click)="confirmAndGoHome()">Confirmar entrega</button>
 			</div>
 		</div>
 	</section>

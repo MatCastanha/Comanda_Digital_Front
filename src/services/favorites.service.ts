@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { DishService } from './dish.service';
 
 @Injectable({ providedIn: 'root' })
 export class FavoritesService {
@@ -10,7 +11,7 @@ export class FavoritesService {
   private subj = new BehaviorSubject<any[]>([]);
   changed$ = this.subj.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private dishService: DishService) {
     // Inicializa consultando o backend para popular favoritos
     this.fetchFavorites().subscribe({ next: () => {}, error: () => { this.items = []; this.subj.next([]); } });
   }
@@ -19,7 +20,8 @@ export class FavoritesService {
   fetchFavorites(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiBase}/favorites`).pipe(
       map(list => {
-        this.items = Array.isArray(list) ? list.slice() : [];
+        // Mapeia cada item cru do backend para o MenuItem consistente via DishService
+        this.items = Array.isArray(list) ? list.map(d => this.dishService.toMenuItem(d)) : [];
         this.subj.next(this.items.slice());
         return this.items;
       })
@@ -44,10 +46,11 @@ export class FavoritesService {
       next: (updated: any) => {
         // backend should return updated dish; se não, buscamos novamente
         if (updated && updated.id !== undefined) {
-          const exists = this.items.findIndex(i => String(i.id) === String(updated.id));
-          if (updated.favorite) {
-            if (exists < 0) this.items.push(updated);
-            else this.items[exists] = updated;
+          const mapped = this.dishService.toMenuItem(updated);
+          const exists = this.items.findIndex(i => String(i.id) === String(mapped.id));
+          if ((updated as any).favorite) {
+            if (exists < 0) this.items.push(mapped);
+            else this.items[exists] = mapped;
           } else {
             if (exists >= 0) this.items.splice(exists, 1);
           }

@@ -55,15 +55,27 @@ export class DishService {
       }
     }
 
+    // Retorna o objeto principal com aliases para compatibilidade entre telas
     return {
       id: dish.id || 0,
+      // imagem: fornece múltiplos aliases para diferentes componentes
       UrlImage: resolvedImg,
+      img: resolvedImg,
+      image: resolvedImg,
+      urlImage: resolvedImg,
+      urlImagem: resolvedImg,
+      // metadados principais
       nome: dish.name || dish.nome || '',
       categoria: dish.category || dish.categoria || '',
       tag: dish.tag || '',
       descricao: dish.description || dish.descricao || '',
+      // preço: mantemos a string formatada para o gerenciador e adicionamos
+      // variantes numéricas para componentes que esperam number
       preco: precoStr,
-    } as MenuItem;
+      price: safePrice,
+      precoNumber: safePrice,
+      precoNum: safePrice,
+    } as any as MenuItem;
   }
   
   // [NOVO] Converte um objeto MenuItem (do front-end) para um Dish (para o back-end)
@@ -104,6 +116,12 @@ export class DishService {
 
     return out as Dish;
 }
+
+  // Expondo um conversor público para que outros serviços (ex: FavoritesService)
+  // possam transformar um objeto cru do backend em MenuItem consistente.
+  public toMenuItem(dish: any): MenuItem {
+    return this.mapDishToMenuItem(dish);
+  }
 
   // Normaliza preço vindo do MenuItem
   private normalizePrice(raw: any): number {

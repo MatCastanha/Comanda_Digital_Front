@@ -23,10 +23,28 @@ export class PedidoAprovadoComponent {
     // Processa order recebido para extrair complemento e total formatado
     if (this.order) {
       try {
-        // Extrai o complemento salvo no cliente ou no address (campo `complement`)
+        // Queremos EXIBIR APENAS o complemento quando disponível.
         const client = this.order?.client ?? this.order?.clientDTO ?? null;
-        const complemento = (client && (client as any).complement) ?? (this.order && (this.order as any).address && (this.order as any).address.complement) ?? '';
-        this.displayAddressLabel = String(complemento || '').trim().length > 0 ? String(complemento).trim() : 'Casa';
+        const complemento = (client && (client as any).complement) ?? (this.order && (this.order as any).address && (this.order as any).address.complement) ?? (this.order as any).client_snapshot?.complement ?? '';
+        if (complemento && String(complemento).trim().length > 0) {
+          // Mostra somente o complemento (ex: 'Casa delax')
+          this.displayAddressLabel = String(complemento).trim();
+        } else {
+          // Se não houver complemento explícito, tentamos extrair do snapshot textual
+          const addrSnapshot = (this.order as any).addressSnapshot ?? (this.order as any).address_snapshot ?? (this.order as any).address_snapshot_text ?? (this.order as any).client_snapshot_name ?? null;
+          if (addrSnapshot && typeof addrSnapshot === 'string' && addrSnapshot.trim().length > 0) {
+            // Tenta localizar um trecho 'Complemento: ...' dentro do snapshot e retornar só o valor
+            const m = String(addrSnapshot).match(/(?:Complemento\s*[:\-]?\s*)(.+)$/i);
+            if (m && m[1]) {
+              this.displayAddressLabel = m[1].trim();
+            } else {
+              // Não há complemento isolado no snapshot: fallback para 'Casa'
+              this.displayAddressLabel = 'Casa';
+            }
+          } else {
+            this.displayAddressLabel = 'Casa';
+          }
+        }
 
         // Extrai total: backend pode retornar 'total', 'price', 'amount' ou calcular via items
         const possibleTotals = [(this.order as any).total, (this.order as any).price, (this.order as any).amount, (this.order as any).valor];

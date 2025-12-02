@@ -50,6 +50,8 @@ export class RastreioComponent implements OnInit, OnDestroy {
         status: (navState.status as any) ?? 'PENDING',
         etaMinutes: navState.etaMinutes ?? null,
         address: navState.address_snapshot || navState.address || navState.address_snapshot_text || navState.client_address || '',
+        // preserve addressSnapshot alias if provided by backend (camelCase)
+        addressSnapshot: navState.addressSnapshot ?? navState.address_snapshot ?? navState.address_snapshot_text ?? navState.address ?? null,
         total: navState.total ?? navState.price ?? navState.amount ?? null,
         items: (navState.items || navState.orderItems || []).map((it: any) => ({
           name: it.name || it.dishName || 'Item',
@@ -61,6 +63,33 @@ export class RastreioComponent implements OnInit, OnDestroy {
         riderPhone: navState.riderPhone ?? null,
         updatedAt: navState.moment ?? navState.updatedAt ?? null
       } as RastreioPayload;
+      // if the navState contains shipping/frete/deliveryFee, preserve it so the UI shows total correctly
+      const navShipping = navState.shipping ?? navState.deliveryFee ?? navState.frete ?? navState.shippingValue ?? navState.taxaEntrega ?? navState.shippingFee ?? navState.fee ?? null;
+      if (navShipping !== undefined && navShipping !== null) {
+        this.shippingFromState = Number(navShipping) || 0;
+      }
+
+      // if backend didn't provide an explicit total in the navState, compute from items + shippingFromState
+      if (this.rastreio.items) {
+        const itemsTotal = this.computeItemsTotal();
+        // If no shipping provided by navState, apply default shipping of 10 when total matches only items
+        const noShippingInState = (navShipping === undefined || navShipping === null);
+        const totalFromState = (this.rastreio.total === null || this.rastreio.total === undefined) ? null : Number(this.rastreio.total);
+        if (noShippingInState) {
+          // if total is missing or equals itemsTotal (i.e. shipping omitted), add default
+          if (totalFromState === null || totalFromState === itemsTotal) {
+            const defaultShipping = 10;
+            this.shippingFromState = defaultShipping;
+            this.rastreio.total = itemsTotal + defaultShipping;
+          } else {
+            // total present but no explicit shipping: keep total and set shippingFromState as difference
+            this.shippingFromState = Math.max(0, Number(this.rastreio.total || 0) - itemsTotal);
+          }
+        } else {
+          // navShipping was present – ensure total includes it
+          if (totalFromState === null) this.rastreio.total = itemsTotal + (this.shippingFromState ?? 0);
+        }
+      }
       // Start listening to backend updates
       this.rastreioService.startTracking(this.orderId);
     } else {
@@ -73,6 +102,7 @@ export class RastreioComponent implements OnInit, OnDestroy {
 
     this.sub.add(this.rastreioService.rastreio$.subscribe(v => {
       this.rastreio = v;
+      console.log('Pedido rastreio (backend update):', v);
       // enrich items for view using dishId
       this.enrichItemsForView();
     }));
@@ -182,7 +212,8 @@ export class RastreioComponent implements OnInit, OnDestroy {
   get formattedAddress(): string {
     const o: any = this.rastreio as any;
     if (!o) return '';
-    const addr = o.address ?? o.address_snapshot ?? null;
+    // Prefer addressSnapshot (camelCase) or other textual snapshots when available
+    const addr = o.addressSnapshot ?? o.address_snapshot ?? o.address_snapshot_text ?? o.address ?? null;
     if (!addr) return '';
     // addr pode ser string ou objeto
     if (typeof addr === 'string') return addr;

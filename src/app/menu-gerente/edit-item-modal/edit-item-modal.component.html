@@ -41,10 +41,10 @@
                   <option value="Bebida">Bebida</option>
               </select>
           </div>
-          <div class="form-group">
+            <div class="form-group">
               <label>Preço *</label>
-              <input type="text" [(ngModel)]="editForm.preco" name="preco" required>
-          </div>
+              <input type="text" [(ngModel)]="editForm.preco" name="preco" required (input)="onPriceInput($event)" (blur)="formatPrice()">
+            </div>
       </div>
 
       <!-- Descrição -->

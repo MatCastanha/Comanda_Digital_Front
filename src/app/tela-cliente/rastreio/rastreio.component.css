@@ -12,7 +12,18 @@
 .r-card.card{box-shadow:0 8px 30px rgba(2,6,23,0.06)}
 .items-list li.card{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:#ffe5b4}
 
-.r-card{background:var(--card);padding:18px;border-radius:14px;box-shadow:0 8px 30px rgba(2,6,23,0.06)}
+.r-card {
+  background-color: #fff8f0; /* fundo suave */
+  border: 2px solid var(--accent); /* borda laranja */
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow:
+    0 0 8px rgba(0, 0, 0, 0.2),     /* sombra preta */
+    0 0 12px rgba(255, 122, 0, 0.3); /* sombra laranja */
+  transition: box-shadow 0.3s ease;
+}
+
+
 .r-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .title{margin:0;font-size:1.1rem}
 .subtitle{margin:4px 0;color:var(--muted);font-size:0.95rem}

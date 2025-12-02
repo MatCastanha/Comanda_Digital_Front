@@ -82,13 +82,16 @@ export class DishService {
   private mapMenuItemToDish(menuItem: MenuItem): Dish {
     // Normaliza o preço: aceita number ou string formatada ("R$ 49,90")
     let priceNum = 0;
-    const raw = (menuItem as any).preco;
+    // Aceita múltiplos aliases que podem aparecer no MenuItem
+    const possiblePriceFields = [(menuItem as any).preco, (menuItem as any).price, (menuItem as any).precoNumber, (menuItem as any).precoNum, (menuItem as any).valor, (menuItem as any).priceString];
+    let raw: any = null;
+    for (const p of possiblePriceFields) {
+      if (p !== undefined && p !== null) { raw = p; break; }
+    }
     if (typeof raw === 'number') {
       priceNum = raw;
     } else if (typeof raw === 'string') {
-      // Remove o prefixo 'R$', espaços, e separadores de milhar (pontos),
-      // então converte a vírgula decimal para ponto.
-      const withoutSymbol = raw.replace('R$', '').replace(/\s/g, '');
+      const withoutSymbol = raw.replace(/R\$/gi, '').replace(/\s/g, '');
       const withoutThousands = withoutSymbol.replace(/\./g, '');
       const normalized = withoutThousands.replace(/,/g, '.');
       const parsed = parseFloat(normalized);
@@ -250,6 +253,7 @@ export class DishService {
   update(id: number, menuItem: MenuItem): Observable<MenuItem> { 
     // Monta o Dish (metadados) a partir do MenuItem
     const dishToSend: Dish = this.mapMenuItemToDish(menuItem);
+    // debug removed
 
     // Sempre enviar multipart/form-data contendo:
     // - campo 'dish' com o JSON dos metadados
@@ -260,6 +264,18 @@ export class DishService {
 
     const fileObj = (menuItem as any).file;
     const urlImageValue = (menuItem as any).UrlImage || '';
+
+    // Também anexa campos texto importantes duplicados no multipart
+    // Alguns backends preferem campos individuais em vez de um JSON 'dish'
+    try {
+      form.append('name', String(dishToSend.name ?? ''));
+      form.append('price', String(dishToSend.price ?? '0'));
+      form.append('category', String(dishToSend.category ?? ''));
+      form.append('description', String(dishToSend.description ?? ''));
+      if (dishToSend.tag) form.append('tag', String(dishToSend.tag));
+    } catch (e) {
+      // ignore if FormData append fails for unexpected types
+    }
 
     if (fileObj && fileObj instanceof File) {
       form.append('file', fileObj, (fileObj as any).name || 'upload.png');

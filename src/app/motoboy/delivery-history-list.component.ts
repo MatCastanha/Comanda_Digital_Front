@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import type { Order } from './order.model';
+import type { Order } from '../enums/order.model';
 
 @Component({
   selector: 'delivery-history-list',

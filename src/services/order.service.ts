@@ -24,9 +24,16 @@ export class OrderService {
     return this.http.get(`${this.baseUrl}/${id}`);
   }
 
-  // Buscar por status
+  // Buscar por status (único)
   findByStatus(status: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/status/${status}`);
+  }
+
+  // Buscar por múltiplos status via query string: /orders?status=READY&status=ON_THE_WAY
+  findByStatuses(statuses: string[]): Observable<any> {
+    if (!statuses || statuses.length === 0) return this.findAll();
+    const params = statuses.map(s => `status=${encodeURIComponent(s)}`).join('&');
+    return this.http.get(`${this.baseUrl}?${params}`);
   }
 
   // Adiciona/atualiza um item no rascunho (carrinho)

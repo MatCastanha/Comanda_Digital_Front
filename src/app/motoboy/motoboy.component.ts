@@ -6,9 +6,11 @@ import { DeliveryCardComponent } from './delivery-card.component';
 import { DeliveryHistoryListComponent } from './delivery-history-list.component';
 import { DeliveryDetailsComponent } from './delivery-details.component';
 import { CancelModalComponent } from './cancel-modal.component';
-import type { Order } from './order.model';
+import type { Order } from '../enums/order.model';
 import { OrderService } from '../../services/order.service';
 import { OrderStatus } from '../enums/order-status.enum';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-motoboy',
@@ -111,7 +113,7 @@ export class MotoboyComponent implements OnInit {
       restaurantAddress: this.cancelTarget!.restaurantAddress,
       clientAddress: this.cancelTarget!.clientAddress,
       items: this.cancelTarget!.items ?? [],
-      status: OrderStatus.PENDING
+      status: OrderStatus.ON_THE_WAY
     };
     this.pedidosDisponiveis = [o, ...this.pedidosDisponiveis];
     // remover se estava em rota
@@ -122,16 +124,45 @@ export class MotoboyComponent implements OnInit {
   }
 
   private loadAvailableOrders(){
-    this.orderService.findByStatus('READY').subscribe({
-      next: (res: any) => {
-        // assume backend retorna array de pedidos; mapeia para nosso tipo `Order`
-        if (Array.isArray(res)) {
-          this.pedidosDisponiveis = res.map((r: any) => this.mapBackendToOrder(r));
-        } else {
-          this.pedidosDisponiveis = [];
-        }
+    // Busca ON_THE_WAY e READY em paralelo, mescla resultados e evita duplicatas.
+    // ON_THE_WAY -> inRouteOrders (já em rota)
+    // READY -> pedidosDisponiveis (apenas se não estiverem em rota)
+    this.orderService.findByStatus('ON_THE_WAY').subscribe({
+      next: (onRes: any) => {
+        const onMapped: Order[] = Array.isArray(onRes) ? onRes.map((r: any) => this.mapBackendToOrder(r)) : [];
+
+        this.orderService.findByStatus('READY').subscribe({
+          next: (readyRes: any) => {
+            const readyMapped: Order[] = Array.isArray(readyRes) ? readyRes.map((r: any) => this.mapBackendToOrder(r)) : [];
+
+            // Junta os dois tipos de pedidos em disponíveis
+            const allDisponiveis = [...readyMapped, ...onMapped];
+
+            // Atualiza lista de disponíveis e também os que já estão em rota
+            this.pedidosDisponiveis = allDisponiveis;
+            this.inRouteOrders = onMapped;
+          },
+          error: () => {
+            // Se READY falhar, mostra só os ON_THE_WAY
+            this.pedidosDisponiveis = [...onMapped];
+            this.inRouteOrders = onMapped;
+          }
+        });
       },
-      error: () => { this.pedidosDisponiveis = []; }
+      error: () => {
+        // Se ON_THE_WAY falhar, tenta carregar só os READY
+        this.orderService.findByStatus('READY').subscribe({
+          next: (r: any) => {
+            const readyMapped: Order[] = Array.isArray(r) ? r.map((rr: any) => this.mapBackendToOrder(rr)) : [];
+            this.pedidosDisponiveis = readyMapped;
+            this.inRouteOrders = [];
+          },
+          error: () => {
+            this.pedidosDisponiveis = [];
+            this.inRouteOrders = [];
+          }
+        });
+      }
     });
   }
 
@@ -159,15 +190,15 @@ export class MotoboyComponent implements OnInit {
   }
 
   private mapStatus(s: any): Order['status'] {
-    if (!s && s !== 0) return OrderStatus.PENDING;
+    if (!s && s !== 0) return OrderStatus.ON_THE_WAY;
     const raw = String(s).toUpperCase().trim();
     // direct mapping if matches enum key
     if ((OrderStatus as any)[raw]) return (OrderStatus as any)[raw];
     // common backend labels -> map to our enum
-    if (raw === 'READY' || raw === 'PRONTO') return OrderStatus.PENDING;
+    if (raw === 'READY' || raw === 'PRONTO') return OrderStatus.READY;
     if (raw === 'OUT_FOR_DELIVERY' || raw === 'EN_ROUTE' || raw === 'ON_THE_WAY' || raw === 'DELIVERY') return OrderStatus.ON_THE_WAY;
     if (raw === 'DELIVERED' || raw === 'ENTREGUE' || raw === 'FINISHED') return OrderStatus.DELIVERED;
-    return OrderStatus.PENDING;
+    return OrderStatus.ON_THE_WAY;
   }
 
   private saveRecentToStorage(){

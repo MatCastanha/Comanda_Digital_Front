@@ -143,10 +143,17 @@ export class PainelComponent implements OnInit, OnDestroy {
     // Mapeia status backend para labels em português usados pela UI
     const backendStatus = (o.status || '').toString().toUpperCase();
     let statusLabel: Order['status'] = 'A PREPARAR';
-    if (backendStatus === 'RECEIVED') statusLabel = 'A PREPARAR';
-    else if (backendStatus === 'IN_PREPARATION') statusLabel = 'EM PREPARO';
-    else if (backendStatus === 'READY') statusLabel = 'PRONTO';
-    else if (backendStatus === 'DELIVERED') statusLabel = 'ENTREGUE';
+    // Normaliza e aceita variações comuns que o backend pode devolver
+    const preparing = ['RECEIVED', 'PENDING'];
+    const inPrep = ['IN_PREPARATION', 'PREPARING'];
+    const ready = ['READY', 'PRONTO'];
+    const onTheWay = ['ON_THE_WAY', 'OUT_FOR_DELIVERY', 'EN_ROUTE', 'DELIVERY', 'SAIU_PARA_ENTREGA'];
+    const delivered = ['DELIVERED', 'FINISHED', 'ENTREGUE'];
+
+    if (preparing.includes(backendStatus)) statusLabel = 'A PREPARAR';
+    else if (inPrep.includes(backendStatus)) statusLabel = 'EM PREPARO';
+    else if (ready.includes(backendStatus)) statusLabel = 'PRONTO';
+    else if (onTheWay.includes(backendStatus) || delivered.includes(backendStatus)) statusLabel = 'ENTREGUE';
 
     const items: OrderItem[] = (o.items || []).map((it: any) => ({
       name: it.dish?.name || it.dishName || it.name || it.productName || it.description || 'Item',
@@ -392,7 +399,8 @@ export class PainelComponent implements OnInit, OnDestroy {
       case 'A PREPARAR': return 'RECEIVED';
       case 'EM PREPARO': return 'IN_PREPARATION';
       case 'PRONTO': return 'READY';
-      case 'ENTREGUE': return 'DELIVERED';
+   
+      case 'ENTREGUE': return 'ON_THE_WAY';
       default: return label as string;
     }
   }
@@ -400,12 +408,15 @@ export class PainelComponent implements OnInit, OnDestroy {
   // Atualiza status do pedido no backend via OrderService e recarrega em caso de erro
   updateOrderStatus(id: number | string, newLabelStatus: Order['status']): void {
     const backendStatus = this.labelToBackendStatus(newLabelStatus);
+    // DEBUG: log do que será enviado ao backend para facilitar diagnóstico
+    try { console.debug('[Painel] updateOrderStatus ->', { id, backendStatus }); } catch(e) {}
     this.orderService.updateStatus(id, backendStatus).subscribe({
       next: () => {
         // Sucesso — nada extra a fazer (UI já atualizada localmente)
+        try { console.debug('[Painel] updateOrderStatus success', { id, backendStatus }); } catch(e) {}
       },
       error: (err) => {
-        console.error('Falha ao atualizar status do pedido:', err);
+        console.error('[Painel] Falha ao atualizar status do pedido:', { id, backendStatus, err });
         // Recarrega listas do backend para manter consistência
         this.loadOrders();
       }

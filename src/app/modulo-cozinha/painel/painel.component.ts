@@ -53,6 +53,8 @@ export class PainelComponent implements OnInit, OnDestroy {
   // SINAL DA DATA E HORA ATUAL - Atualiza a cada segundo
   currentDateTime = signal<Date>(new Date());
   private updateIntervalId: any;  // ID do intervalo que atualiza a hora
+  // Cache local de timestamps por pedido (evita perder createdAt quando backend não retorna)
+  private timestampCache: Map<string, Date> = new Map();
 
   // ========== COLUNAS DO KANBAN - Listas de pedidos por status ==========
   // Cada sinal armazena um array de pedidos em cada etapa do fluxo
@@ -102,8 +104,15 @@ export class PainelComponent implements OnInit, OnDestroy {
         });
 
         // Mapeia e ordena por data de criação (mais antigos primeiro)
+        // Antes de mapear, garantimos que o cache contenha timestamps atuais
+        // (mantemos o que já tínhamos para pedidos previamente carregados)
         const mapped = real.map(o => this.mapBackendOrder(o))
                            .sort((a, b) => (a.timestamp?.getTime() || 0) - (b.timestamp?.getTime() || 0));
+
+        // Atualiza o cache com os timestamps mapeados para reutilização futura
+        for (const m of mapped) {
+          try { this.timestampCache.set(String(m.id), new Date(m.timestamp)); } catch(e) { /* noop */ }
+        }
 
         // Limpa listas e popula com os itens mapeados
         const toPrepareArr: Order[] = [];
@@ -139,7 +148,14 @@ export class PainelComponent implements OnInit, OnDestroy {
     const table = o.table ?? o.tableNumber ?? '';
     // Determina timestamp a partir de propriedades comuns
     const tsRaw = o.moment ?? o.createdAt ?? o.timestamp ?? o.created ?? o.dateTime;
-    const timestamp = tsRaw ? new Date(tsRaw) : new Date();
+    let timestamp: Date;
+    if (tsRaw) {
+      timestamp = new Date(tsRaw);
+    } else {
+      // Se o backend não forneceu timestamp, tente reutilizar do cache (para não zerar o contador)
+      const cached = this.timestampCache.get(String(id));
+      timestamp = cached ? new Date(cached) : new Date();
+    }
     // Mapeia status backend para labels em português usados pela UI
     const backendStatus = (o.status || '').toString().toUpperCase();
     let statusLabel: Order['status'] = 'A PREPARAR';
@@ -473,6 +489,14 @@ export class PainelComponent implements OnInit, OnDestroy {
       if (start) {
         const mins = Math.round((Date.now() - new Date(start).getTime()) / 60000);
         return mins;
+      }
+      // Se não há dados em localStorage, mas o pedido foi entregue, calcule a duração entre receivedAt/timestamp e deliveredAt
+      if (order.deliveredAt) {
+        const startDate = order.receivedAt || order.timestamp;
+        if (startDate) {
+          const mins = Math.round(((order.deliveredAt?.getTime() || 0) - startDate.getTime()) / 60000);
+          if (!isNaN(mins) && mins >= 0) return mins;
+        }
       }
     } catch (e) { /* ignore */ }
     return null;

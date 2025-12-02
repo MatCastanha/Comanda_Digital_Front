@@ -88,7 +88,14 @@ export class HistoricoComponent implements OnInit {
 
   acompanhar(order: OrderDTO) {
     if (!order) return;
-    this.router.navigate(['/rastreio', order.id]);
+    // navegar para a tela de rastreio do cliente passando o pedido via navigation state
+    // o componente `RastreioComponent` tenta popular a UI a partir do history.state
+    try {
+      this.router.navigate(['/cliente/rastreio'], { state: { order } });
+    } catch (e) {
+      // fallback: navegar com query param orderId
+      this.router.navigate(['/cliente/rastreio'], { queryParams: { orderId: order.id } });
+    }
   }
 
   pedirNovamente(order: OrderDTO) {
